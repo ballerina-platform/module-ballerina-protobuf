@@ -14,6 +14,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/grpc;
+
 # Represents a stream of integers.
 public class IntStream {
     private stream<anydata, grpc:Error?> anydataStream;
