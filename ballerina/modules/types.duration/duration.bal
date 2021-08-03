@@ -20,10 +20,16 @@ import ballerina/time;
 public class DurationStream {
     private stream<anydata, error?> anydataStream;
 
+    # Initialize the stream.
+    #
+    # + anydataStream - anydata stream
     public isolated function init(stream<anydata, error?> anydataStream) {
         self.anydataStream = anydataStream;
     }
 
+    # Retrieve the next value of the stream.
+    #
+    # + return - Returns the next value of the stream or else an error
     public isolated function next() returns record {|time:Seconds value;|}|error? {
         var streamValue = self.anydataStream.next();
         if (streamValue is ()) {
@@ -36,18 +42,27 @@ public class DurationStream {
         }
     }
 
+    # Close the stream.
+    #
+    # + return - Returns an error if falied to close the stream
     public isolated function close() returns error? {
         return self.anydataStream.close();
     }
 }
 
 # A context of duration stream.
+#
+# + content - Content stream
+# + headers - Headers map
 public type ContextDurationStream record {|
     stream<time:Seconds, error?> content;
     map<string|string[]> headers;
 |};
 
 # A duration context.
+#
+# + content - Content
+# + headers - Headers map
 public type ContextDuration record {|
     time:Seconds content;
     map<string|string[]> headers;

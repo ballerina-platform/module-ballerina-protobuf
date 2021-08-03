@@ -18,34 +18,49 @@
 public class StringStream {
     private stream<anydata, error?> anydataStream;
 
+    # Initialize the stream.
+    #
+    # + anydataStream - anydata stream
     public isolated function init(stream<anydata, error?> anydataStream) {
         self.anydataStream = anydataStream;
     }
 
-    public isolated function next() returns record {| string value; |}|error? {
+    # Retrieve the next value of the stream.
+    #
+    # + return - Returns the next value of the stream or else an error
+    public isolated function next() returns record {|string value;|}|error? {
         var streamValue = self.anydataStream.next();
         if (streamValue is ()) {
             return streamValue;
         } else if (streamValue is error) {
             return streamValue;
         } else {
-            record {| string value; |} nextRecord = {value: <string>streamValue.value};
+            record {|string value;|} nextRecord = {value: <string>streamValue.value};
             return nextRecord;
         }
     }
 
+    # Close the stream.
+    #
+    # + return - Returns an error if falied to close the stream
     public isolated function close() returns error? {
         return self.anydataStream.close();
     }
 }
 
 # A context of string stream.
+#
+# + content - Content stream
+# + headers - Headers map
 public type ContextStringStream record {|
     stream<string, error?> content;
     map<string|string[]> headers;
 |};
 
 # A string context.
+#
+# + content - Content
+# + headers - Headers map
 public type ContextString record {|
     string content;
     map<string|string[]> headers;

@@ -19,6 +19,8 @@ public type Empty record {|
 |};
 
 # A nil context
+#
+# + headers - Headers map
 public type ContextNil record {|
     map<string|string[]> headers;
 |};

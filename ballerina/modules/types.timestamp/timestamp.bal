@@ -20,10 +20,16 @@ import ballerina/time;
 public class TimestampStream {
     private stream<anydata, error?> anydataStream;
 
+    # Initialize the stream.
+    #
+    # + anydataStream - anydata stream
     public isolated function init(stream<anydata, error?> anydataStream) {
         self.anydataStream = anydataStream;
     }
 
+    # Retrieve the next value of the stream.
+    #
+    # + return - Returns the next value of the stream or else an error
     public isolated function next() returns record {|time:Utc value;|}|error? {
         var streamValue = self.anydataStream.next();
         if (streamValue is ()) {
@@ -36,18 +42,27 @@ public class TimestampStream {
         }
     }
 
+    # Close the stream.
+    #
+    # + return - Returns an error if falied to close the stream
     public isolated function close() returns error? {
         return self.anydataStream.close();
     }
 }
 
 # A context of timestamp stream.
+#
+# + content - Content stream
+# + headers - Headers map
 public type ContextTimestampStream record {|
     stream<time:Utc, error?> content;
     map<string|string[]> headers;
 |};
 
 # A timestamp context.
+#
+# + content - Content
+# + headers - Headers map
 public type ContextTimestamp record {|
     time:Utc content;
     map<string|string[]> headers;
