@@ -14,21 +14,19 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/grpc;
-
 # Represents a stream of integers.
 public class IntStream {
-    private stream<anydata, grpc:Error?> anydataStream;
+    private stream<anydata, error?> anydataStream;
 
-    public isolated function init(stream<anydata, grpc:Error?> anydataStream) {
+    public isolated function init(stream<anydata, error?> anydataStream) {
         self.anydataStream = anydataStream;
     }
 
-    public isolated function next() returns record {| int value; |}|grpc:Error? {
+    public isolated function next() returns record {| int value; |}|error? {
         var streamValue = self.anydataStream.next();
         if (streamValue is ()) {
             return streamValue;
-        } else if (streamValue is grpc:Error) {
+        } else if (streamValue is error) {
             return streamValue;
         } else {
             record {| int value; |} nextRecord = {value: <int>streamValue.value};
@@ -36,7 +34,7 @@ public class IntStream {
         }
     }
 
-    public isolated function close() returns grpc:Error? {
+    public isolated function close() returns error? {
         return self.anydataStream.close();
     }
 }

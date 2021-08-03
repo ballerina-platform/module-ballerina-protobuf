@@ -14,19 +14,21 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/time;
+
 # Represents a stream of durations.
 public class DurationStream {
-    private stream<anydata, Error?> anydataStream;
+    private stream<anydata, error?> anydataStream;
 
-    public isolated function init(stream<anydata, Error?> anydataStream) {
+    public isolated function init(stream<anydata, error?> anydataStream) {
         self.anydataStream = anydataStream;
     }
 
-    public isolated function next() returns record {|time:Seconds value;|}|Error? {
+    public isolated function next() returns record {|time:Seconds value;|}|error? {
         var streamValue = self.anydataStream.next();
         if (streamValue is ()) {
             return streamValue;
-        } else if (streamValue is Error) {
+        } else if (streamValue is error) {
             return streamValue;
         } else {
             record {|time:Seconds value;|} nextRecord = {value: <time:Seconds>streamValue.value};
@@ -34,7 +36,7 @@ public class DurationStream {
         }
     }
 
-    public isolated function close() returns Error? {
+    public isolated function close() returns error? {
         return self.anydataStream.close();
     }
 }
