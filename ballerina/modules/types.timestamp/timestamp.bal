@@ -50,19 +50,19 @@ public class TimestampStream {
     }
 }
 
-# A context of timestamp stream.
+# Context representation record of a timestamp stream.
 #
-# + content - Content stream
-# + headers - Headers map
+# + content - Stream of timestamps
+# + headers - The headers map
 public type ContextTimestampStream record {|
     stream<time:Utc, error?> content;
     map<string|string[]> headers;
 |};
 
-# A timestamp context.
+# Context representation record of a timestamp.
 #
-# + content - Content
-# + headers - Headers map
+# + content - The timestamp value
+# + headers - The headers map
 public type ContextTimestamp record {|
     time:Utc content;
     map<string|string[]> headers;

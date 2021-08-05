@@ -48,19 +48,19 @@ public class BytesStream {
     }
 }
 
-# A context of bytes stream.
+# Context representation record of a byte array stream.
 #
-# + content - Content stream
-# + headers - Headers map
+# + content - Stream of floats
+# + headers - The headers map
 public type ContextBytesStream record {|
     stream<byte[], error?> content;
     map<string|string[]> headers;
 |};
 
-# A bytes context.
+# Context representation record of a byte array.
 #
-# + content - Content
-# + headers - Headers map
+# + content - The bytes value
+# + headers - The headers map
 public type ContextBytes record {|
     byte[] content;
     map<string|string[]> headers;

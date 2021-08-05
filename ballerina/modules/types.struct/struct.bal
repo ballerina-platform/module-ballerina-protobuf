@@ -14,6 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+# Represents a stream of structs.
 public class StructStream {
     private stream<anydata, error?> anydataStream;
 
@@ -47,19 +48,19 @@ public class StructStream {
     }
 }
 
-# A context of timestamp stream.
+# Context representation record of a struct stream.
 #
-# + content - Content stream
-# + headers - Headers map
+# + content - Stream of structs
+# + headers - The headers map
 public type ContextStructStream record {|
     stream<map<anydata>, error?> content;
     map<string|string[]> headers;
 |};
 
-# A timestamp context.
+# Context representation record of a struct.
 #
-# + content - Content
-# + headers - Headers map
+# + content - The struct value
+# + headers - The headers map
 public type ContextStruct record {|
     map<anydata> content;
     map<string|string[]> headers;

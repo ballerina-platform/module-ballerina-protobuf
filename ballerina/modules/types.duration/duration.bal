@@ -50,19 +50,19 @@ public class DurationStream {
     }
 }
 
-# A context of duration stream.
+# Context representation record of a duration stream.
 #
 # + content - Content stream
-# + headers - Headers map
+# + headers - The headers map
 public type ContextDurationStream record {|
     stream<time:Seconds, error?> content;
     map<string|string[]> headers;
 |};
 
-# A duration context.
+# Context representation record of a duration.
 #
-# + content - Content
-# + headers - Headers map
+# + content - Time duration represented using `time:Seconds`. The `time:Seconds` is a subtype of Ballerina `decimal` type.
+# + headers - The headers map
 public type ContextDuration record {|
     time:Seconds content;
     map<string|string[]> headers;

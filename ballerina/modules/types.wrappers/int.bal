@@ -48,19 +48,19 @@ public class IntStream {
     }
 }
 
-# A context of integer stream.
+# Context representation record of an integer stream.
 #
-# + content - Content stream
-# + headers - Headers map
+# + content - Stream of integers
+# + headers - The headers map
 public type ContextIntStream record {|
     stream<int, error?> content;
     map<string|string[]> headers;
 |};
 
-# An integer context.
+# Context representation record of an integer value.
 #
-# + content - Content
-# + headers - Headers map
+# + content - The integer value
+# + headers - The headers map
 public type ContextInt record {|
     int content;
     map<string|string[]> headers;

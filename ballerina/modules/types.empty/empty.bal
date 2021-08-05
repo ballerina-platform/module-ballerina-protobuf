@@ -18,9 +18,9 @@
 public type Empty record {|
 |};
 
-# A nil context
+# Context representation record of a gRPC Empty message.
 #
-# + headers - Headers map
+# + headers - The headers map
 public type ContextNil record {|
     map<string|string[]> headers;
 |};

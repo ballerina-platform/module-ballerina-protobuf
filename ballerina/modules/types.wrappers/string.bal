@@ -48,19 +48,19 @@ public class StringStream {
     }
 }
 
-# A context of string stream.
+# Context representation record of a string stream.
 #
-# + content - Content stream
-# + headers - Headers map
+# + content - Stream of strings
+# + headers - The headers map
 public type ContextStringStream record {|
     stream<string, error?> content;
     map<string|string[]> headers;
 |};
 
-# A string context.
+# Context representation record of a string value.
 #
-# + content - Content
-# + headers - Headers map
+# + content - The string value
+# + headers - The headers map
 public type ContextString record {|
     string content;
     map<string|string[]> headers;

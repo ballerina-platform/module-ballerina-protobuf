@@ -48,19 +48,19 @@ public class BooleanStream {
     }
 }
 
-# A context of boolean stream.
+# Context representation record of a boolean stream.
 #
-# + content - Content stream
-# + headers - Headers map
+# + content - Stream of booleans
+# + headers - The headers map
 public type ContextBooleanStream record {|
     stream<boolean, error?> content;
     map<string|string[]> headers;
 |};
 
-# A boolean context.
+# Context representation record of a boolean value.
 #
-# + content - Content
-# + headers - Headers map
+# + content - The boolean value
+# + headers - The headers map
 public type ContextBoolean record {|
     boolean content;
     map<string|string[]> headers;

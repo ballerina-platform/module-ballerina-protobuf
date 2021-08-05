@@ -48,19 +48,19 @@ public class FloatStream {
     }
 }
 
-# A context of float stream.
+# Context representation record of a float stream.
 #
-# + content - Content stream
-# + headers - Headers map
+# + content - Stream of floats
+# + headers - The headers map
 public type ContextFloatStream record {|
     stream<float, error?> content;
     map<string|string[]> headers;
 |};
 
-# A float context.
+# Context representation record of a float value.
 #
-# + content - Content
-# + headers - Headers map
+# + content - The float value
+# + headers - The headers map
 public type ContextFloat record {|
     float content;
     map<string|string[]> headers;
