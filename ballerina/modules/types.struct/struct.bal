@@ -42,7 +42,7 @@ public class StructStream {
 
     # Close the stream.
     #
-    # + return - Returns an error if falied to close the stream
+    # + return - Returns an error if failed to close the stream
     public isolated function close() returns error? {
         return self.anydataStream.close();
     }
@@ -50,7 +50,7 @@ public class StructStream {
 
 # Context representation record of a struct stream.
 #
-# + content - Stream of structs
+# + content - Stream of structs(gRPC `Struct` is represented using `map<anydata>`)
 # + headers - The headers map
 public type ContextStructStream record {|
     stream<map<anydata>, error?> content;
@@ -59,7 +59,7 @@ public type ContextStructStream record {|
 
 # Context representation record of a struct.
 #
-# + content - The struct value
+# + content - The struct value represented using `map<anydata>`
 # + headers - The headers map
 public type ContextStruct record {|
     map<anydata> content;

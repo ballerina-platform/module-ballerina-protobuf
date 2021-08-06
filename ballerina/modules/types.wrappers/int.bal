@@ -42,7 +42,7 @@ public class IntStream {
 
     # Close the stream.
     #
-    # + return - Returns an error if falied to close the stream
+    # + return - Returns an error if failed to close the stream
     public isolated function close() returns error? {
         return self.anydataStream.close();
     }
@@ -50,7 +50,7 @@ public class IntStream {
 
 # Context representation record of an integer stream.
 #
-# + content - Stream of integers
+# + content - Stream of integer values
 # + headers - The headers map
 public type ContextIntStream record {|
     stream<int, error?> content;

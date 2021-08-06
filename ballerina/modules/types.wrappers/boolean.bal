@@ -42,7 +42,7 @@ public class BooleanStream {
 
     # Close the stream.
     #
-    # + return - Returns an error if falied to close the stream
+    # + return - Returns an error if failed to close the stream
     public isolated function close() returns error? {
         return self.anydataStream.close();
     }
@@ -50,7 +50,7 @@ public class BooleanStream {
 
 # Context representation record of a boolean stream.
 #
-# + content - Stream of booleans
+# + content - Stream of boolean values
 # + headers - The headers map
 public type ContextBooleanStream record {|
     stream<boolean, error?> content;

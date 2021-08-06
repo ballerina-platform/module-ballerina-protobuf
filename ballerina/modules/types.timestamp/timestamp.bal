@@ -44,7 +44,7 @@ public class TimestampStream {
 
     # Close the stream.
     #
-    # + return - Returns an error if falied to close the stream
+    # + return - Returns an error if failed to close the stream
     public isolated function close() returns error? {
         return self.anydataStream.close();
     }
@@ -52,7 +52,7 @@ public class TimestampStream {
 
 # Context representation record of a timestamp stream.
 #
-# + content - Stream of timestamps
+# + content - Stream of timestamp values
 # + headers - The headers map
 public type ContextTimestampStream record {|
     stream<time:Utc, error?> content;

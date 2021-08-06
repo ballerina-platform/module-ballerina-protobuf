@@ -42,7 +42,7 @@ public class FloatStream {
 
     # Close the stream.
     #
-    # + return - Returns an error if falied to close the stream
+    # + return - Returns an error if failed to close the stream
     public isolated function close() returns error? {
         return self.anydataStream.close();
     }
@@ -50,7 +50,7 @@ public class FloatStream {
 
 # Context representation record of a float stream.
 #
-# + content - Stream of floats
+# + content - Stream of float values
 # + headers - The headers map
 public type ContextFloatStream record {|
     stream<float, error?> content;

@@ -42,7 +42,7 @@ public class BytesStream {
 
     # Close the stream.
     #
-    # + return - Returns an error if falied to close the stream
+    # + return - Returns an error if failed to close the stream
     public isolated function close() returns error? {
         return self.anydataStream.close();
     }
@@ -50,7 +50,7 @@ public class BytesStream {
 
 # Context representation record of a byte array stream.
 #
-# + content - Stream of floats
+# + content - Stream of float values
 # + headers - The headers map
 public type ContextBytesStream record {|
     stream<byte[], error?> content;

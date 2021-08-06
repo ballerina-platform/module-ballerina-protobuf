@@ -42,7 +42,7 @@ public class StringStream {
 
     # Close the stream.
     #
-    # + return - Returns an error if falied to close the stream
+    # + return - Returns an error if failed to close the stream
     public isolated function close() returns error? {
         return self.anydataStream.close();
     }
@@ -50,7 +50,7 @@ public class StringStream {
 
 # Context representation record of a string stream.
 #
-# + content - Stream of strings
+# + content - Stream of string values
 # + headers - The headers map
 public type ContextStringStream record {|
     stream<string, error?> content;
