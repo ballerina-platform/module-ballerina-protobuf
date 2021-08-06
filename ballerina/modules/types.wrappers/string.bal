@@ -30,13 +30,10 @@ public class StringStream {
     # + return - Returns the next value of the stream or else an error
     public isolated function next() returns record {|string value;|}|error? {
         var streamValue = self.anydataStream.next();
-        if (streamValue is ()) {
-            return streamValue;
-        } else if (streamValue is error) {
+        if streamValue is error? {
             return streamValue;
         } else {
-            record {|string value;|} nextRecord = {value: <string>streamValue.value};
-            return nextRecord;
+            return {value: <string>streamValue.value};
         }
     }
 

@@ -30,13 +30,10 @@ public class BytesStream {
     # + return - Returns the next value of the stream or else an error
     public isolated function next() returns record {|byte[] value;|}|error? {
         var streamValue = self.anydataStream.next();
-        if (streamValue is ()) {
-            return streamValue;
-        } else if (streamValue is error) {
+        if streamValue is error? {
             return streamValue;
         } else {
-            record {|byte[] value;|} nextRecord = {value: <byte[]>streamValue.value};
-            return nextRecord;
+            return {value: <byte[]>streamValue.value};
         }
     }
 

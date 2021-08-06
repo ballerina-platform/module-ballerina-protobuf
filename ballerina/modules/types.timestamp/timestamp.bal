@@ -32,13 +32,10 @@ public class TimestampStream {
     # + return - Returns the next value of the stream or else an error
     public isolated function next() returns record {|time:Utc value;|}|error? {
         var streamValue = self.anydataStream.next();
-        if (streamValue is ()) {
-            return streamValue;
-        } else if (streamValue is error) {
+        if streamValue is error? {
             return streamValue;
         } else {
-            record {|time:Utc value;|} nextRecord = {value: <time:Utc>streamValue.value.cloneReadOnly()};
-            return nextRecord;
+            return {value: <time:Utc>streamValue.value.cloneReadOnly()};
         }
     }
 

@@ -30,13 +30,10 @@ public class StructStream {
     # + return - Returns the next value of the stream or else an error
     public isolated function next() returns record {|map<anydata> value;|}|error? {
         var streamValue = self.anydataStream.next();
-        if (streamValue is ()) {
-            return streamValue;
-        } else if (streamValue is error) {
+        if streamValue is error? {
             return streamValue;
         } else {
-            record {|map<anydata> value;|} nextRecord = {value: <map<anydata>>streamValue.value};
-            return nextRecord;
+            return {value: <map<anydata>>streamValue.value};
         }
     }
 

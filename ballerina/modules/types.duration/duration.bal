@@ -32,13 +32,10 @@ public class DurationStream {
     # + return - Returns the next value of the stream or else an error
     public isolated function next() returns record {|time:Seconds value;|}|error? {
         var streamValue = self.anydataStream.next();
-        if (streamValue is ()) {
-            return streamValue;
-        } else if (streamValue is error) {
+        if streamValue is error? {
             return streamValue;
         } else {
-            record {|time:Seconds value;|} nextRecord = {value: <time:Seconds>streamValue.value};
-            return nextRecord;
+            return {value: <time:Seconds>streamValue.value};
         }
     }
 
