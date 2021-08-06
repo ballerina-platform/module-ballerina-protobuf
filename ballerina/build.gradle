@@ -36,7 +36,9 @@ def packageName = "protobuf"
 def packageOrg = "ballerina"
 def tomlVersion = stripBallerinaExtensionVersion("${project.version}")
 def ballerinaConfigFile = new File("$project.projectDir/Ballerina.toml")
+def dependenciesTomlFile = new File("$project.projectDir/Dependencies.toml")
 def originalConfig = ballerinaConfigFile.text
+def originalDependenciesToml = dependenciesTomlFile.text
 
 def stripBallerinaExtensionVersion(String extVersion) {
     if (extVersion.matches(project.ext.timestampedVersionRegex)) {
@@ -62,6 +64,10 @@ ballerina {
 
 task updateTomlFiles {
     doLast {
+        def stdlibDependentTimeVersion = stripBallerinaExtensionVersion(project.stdlibTimeVersion)
+        def newDependenciesToml = dependenciesTomlFile.text.replace("@stdlib.time.version@", stdlibDependentTimeVersion)
+        dependenciesTomlFile.text = newDependenciesToml
+
         def newConfig = ballerinaConfigFile.text.replace("@project.version@", project.version)
         newConfig = newConfig.replace("@toml.version@", tomlVersion)
         ballerinaConfigFile.text = newConfig
@@ -71,6 +77,7 @@ task updateTomlFiles {
 task revertTomlFiles {
     doLast {
         ballerinaConfigFile.text = originalConfig
+        dependenciesTomlFile.text = originalDependenciesToml
     }
 }
 
