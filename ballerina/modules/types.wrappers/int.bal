@@ -62,3 +62,7 @@ public type ContextInt record {|
     int content;
     map<string|string[]> headers;
 |};
+
+public isolated function getHello() returns string {
+    return "hello";
+}

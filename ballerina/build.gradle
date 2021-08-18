@@ -39,6 +39,7 @@ def ballerinaConfigFile = new File("$project.projectDir/Ballerina.toml")
 def dependenciesTomlFile = new File("$project.projectDir/Dependencies.toml")
 def originalConfig = ballerinaConfigFile.text
 def originalDependenciesToml = dependenciesTomlFile.text
+def testCoverageParam = "--code-coverage --test-report --coverage-format=xml --includes=ballerina.protobuf.*"
 
 def stripBallerinaExtensionVersion(String extVersion) {
     if (extVersion.matches(project.ext.timestampedVersionRegex)) {
