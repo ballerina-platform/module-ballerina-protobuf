@@ -15,12 +15,13 @@
 // under the License.
 
 import ballerina/test;
+import ballerina/protobuf.types.wrappers;
 
 @test:Config {}
 isolated function testWrappersInt() {
     int[] intArray = [1, 2, 3, 4];
     stream<int> intStream = intArray.toStream();
-    stream<int, error?> outputStream = new (new IntStream(intStream));
+    stream<int, error?> outputStream = new (new wrappers:IntStream(intStream));
 
     test:assertEquals(outputStream.next(), {"value":1});
     test:assertEquals(outputStream.next(), {"value":2});
