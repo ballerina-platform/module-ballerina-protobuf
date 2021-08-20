@@ -2,3 +2,4 @@
 org = "ballerina"
 name = "protobuf"
 version = "@toml.version@"
+distribution = "slbeta3"
