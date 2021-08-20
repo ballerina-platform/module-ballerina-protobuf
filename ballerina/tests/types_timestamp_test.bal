@@ -31,4 +31,8 @@ isolated function testTimestamp() {
 
     var result = outputStream.close();
     test:assertFalse(result is error);
+
+    timestamp:ContextTimestamp contextTimestamp = {content: [1629435635, 0.970213000],
+                                   headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+    test:assertEquals(contextTimestamp.content, <[int, decimal] & readonly>[1629435635, 0.970213000]);
 }

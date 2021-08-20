@@ -29,6 +29,10 @@ isolated function testWrappersString() {
 
     var result = outputStream.close();
     test:assertFalse(result is error);
+
+    wrappers:ContextString contextString = {content: "test message",
+                                   headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+    test:assertEquals(contextString.content, "test message");
 }
 
 @test:Config {}
@@ -43,6 +47,10 @@ isolated function testWrappersInt() {
 
     var result = outputStream.close();
     test:assertFalse(result is error);
+
+    wrappers:ContextInt contextInt = {content: 845315,
+                                   headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+    test:assertEquals(contextInt.content, 845315);
 }
 
 @test:Config {}
@@ -57,6 +65,10 @@ isolated function testWrappersFloat() {
 
     var result = outputStream.close();
     test:assertFalse(result is error);
+
+    wrappers:ContextFloat contextFloat = {content: 845.315,
+                                       headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+    test:assertEquals(contextFloat.content, 845.315);
 }
 
 @test:Config {}
@@ -71,6 +83,10 @@ isolated function testWrappersBoolean() {
 
     var result = outputStream.close();
     test:assertFalse(result is error);
+
+    wrappers:ContextBoolean contextBoolean = {content: true,
+                                       headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+    test:assertEquals(contextBoolean.content, true);
 }
 
 @test:Config {}
@@ -90,4 +106,8 @@ isolated function testWrappersBytes() {
 
     var result = outputStream.close();
     test:assertFalse(result is error);
+
+    wrappers:ContextBytes contextBytes = {content: [1, 2, 4, 9, 1, 2, 4, 9, 1, 2, 4, 9, 1, 2, 4, 9],
+                                       headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+    test:assertEquals(contextBytes.content, [1, 2, 4, 9, 1, 2, 4, 9, 1, 2, 4, 9, 1, 2, 4, 9]);
 }

@@ -30,4 +30,8 @@ isolated function testStruct() {
 
     var result = outputStream.close();
     test:assertFalse(result is error);
+
+    struct:ContextStruct contextStruct = {content: {name: "Alex", age: 29},
+                                   headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+    test:assertEquals(contextStruct.content, {name: "Alex", age: 29});
 }

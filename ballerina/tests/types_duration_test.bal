@@ -30,4 +30,8 @@ isolated function testDuration() {
 
     var result = outputStream.close();
     test:assertFalse(result is error);
+
+    duration:ContextDuration contextDuration = {content: 13920.47174281,
+                                   headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+    test:assertEquals(contextDuration.content, <decimal>13920.47174281);
 }
