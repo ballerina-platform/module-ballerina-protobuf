@@ -26,6 +26,9 @@ isolated function testWrappersString() {
     test:assertEquals(outputStream.next(), {"value": "Alex"});
     test:assertEquals(outputStream.next(), {"value": "Nicky"});
     test:assertEquals(outputStream.next(), {"value": "John"});
+
+    var result = outputStream.close();
+    test:assertFalse(result is error);
 }
 
 @test:Config {}
@@ -37,6 +40,9 @@ isolated function testWrappersInt() {
     test:assertEquals(outputStream.next(), {"value": 1});
     test:assertEquals(outputStream.next(), {"value": 2});
     test:assertEquals(outputStream.next(), {"value": 3});
+
+    var result = outputStream.close();
+    test:assertFalse(result is error);
 }
 
 @test:Config {}
@@ -48,6 +54,9 @@ isolated function testWrappersFloat() {
     test:assertEquals(outputStream.next(), {"value": 1.25});
     test:assertEquals(outputStream.next(), {"value": 2.56});
     test:assertEquals(outputStream.next(), {"value": 3.14});
+
+    var result = outputStream.close();
+    test:assertFalse(result is error);
 }
 
 @test:Config {}
@@ -59,6 +68,9 @@ isolated function testWrappersBoolean() {
     test:assertEquals(outputStream.next(), {"value": true});
     test:assertEquals(outputStream.next(), {"value": false});
     test:assertEquals(outputStream.next(), {"value": false});
+
+    var result = outputStream.close();
+    test:assertFalse(result is error);
 }
 
 @test:Config {}
@@ -75,4 +87,7 @@ isolated function testWrappersBytes() {
     test:assertEquals(outputStream.next(), {"value": [1, 2, 4, 9, 1, 2, 4, 9, 1, 2, 4, 9, 1, 2, 4, 9]});
     test:assertEquals(outputStream.next(), {"value": [2, 4,16, 25, 1, 2, 4, 9, 1, 2, 4, 9, 1, 2, 4, 9]});
     test:assertEquals(outputStream.next(), {"value": [10, 6, 4, 9, 1, 2, 4, 9, 1, 2, 4, 9, 1, 2, 4, 9]});
+
+    var result = outputStream.close();
+    test:assertFalse(result is error);
 }
