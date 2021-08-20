@@ -33,6 +33,10 @@ isolated function testWrappersString() {
     wrappers:ContextString contextString = {content: "test message",
                                    headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
     test:assertEquals(contextString.content, "test message");
+
+    wrappers:ContextStringStream contextStringStream = {content: stringStream,
+                                   headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+    test:assertEquals(contextStringStream.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
 }
 
 @test:Config {}
@@ -51,6 +55,10 @@ isolated function testWrappersInt() {
     wrappers:ContextInt contextInt = {content: 845315,
                                    headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
     test:assertEquals(contextInt.content, 845315);
+
+    wrappers:ContextIntStream contextIntStream = {content: intStream,
+                                   headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+    test:assertEquals(contextIntStream.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
 }
 
 @test:Config {}
@@ -69,6 +77,10 @@ isolated function testWrappersFloat() {
     wrappers:ContextFloat contextFloat = {content: 845.315,
                                        headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
     test:assertEquals(contextFloat.content, 845.315);
+
+    wrappers:ContextFloatStream contextFloatStream = {content: floatStream,
+                                   headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+    test:assertEquals(contextFloatStream.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
 }
 
 @test:Config {}
@@ -87,6 +99,10 @@ isolated function testWrappersBoolean() {
     wrappers:ContextBoolean contextBoolean = {content: true,
                                        headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
     test:assertEquals(contextBoolean.content, true);
+
+    wrappers:ContextBooleanStream contextBooleanStream = {content: booleanStream,
+                                   headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+    test:assertEquals(contextBooleanStream.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
 }
 
 @test:Config {}
@@ -110,4 +126,8 @@ isolated function testWrappersBytes() {
     wrappers:ContextBytes contextBytes = {content: [1, 2, 4, 9, 1, 2, 4, 9, 1, 2, 4, 9, 1, 2, 4, 9],
                                        headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
     test:assertEquals(contextBytes.content, [1, 2, 4, 9, 1, 2, 4, 9, 1, 2, 4, 9, 1, 2, 4, 9]);
+
+    wrappers:ContextBytesStream contextBytesStream = {content: bytesStream,
+                                   headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+    test:assertEquals(contextBytesStream.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
 }

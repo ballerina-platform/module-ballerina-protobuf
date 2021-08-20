@@ -35,4 +35,8 @@ isolated function testTimestamp() {
     timestamp:ContextTimestamp contextTimestamp = {content: [1629435635, 0.970213000],
                                    headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
     test:assertEquals(contextTimestamp.content, <[int, decimal] & readonly>[1629435635, 0.970213000]);
+
+    timestamp:ContextTimestampStream contextTimestampStream = {content: timeUtcStream,
+                                   headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+    test:assertEquals(contextTimestampStream.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
 }
