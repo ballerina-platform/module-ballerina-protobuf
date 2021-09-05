@@ -8,6 +8,12 @@ dependencies-toml-version = "2"
 
 [[package]]
 org = "ballerina"
+name = "jballerina.java"
+version = "0.9.0"
+transitive = true
+
+[[package]]
+org = "ballerina"
 name = "test"
 version = "0.8.0"
 scope = "testOnly"
