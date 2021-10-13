@@ -1,6 +1,6 @@
 [package]
 org = "ballerina"
 name = "protobuf"
-version = "1.0.0"
+version = "1.0.1"
 distribution = "slbeta3"
 export = ["protobuf.types.duration", "protobuf.types.empty", "protobuf.types.struct", "protobuf.types.timestamp", "protobuf.types.wrappers"]
