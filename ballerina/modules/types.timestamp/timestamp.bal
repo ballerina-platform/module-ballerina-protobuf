@@ -16,37 +16,6 @@
 
 import ballerina/time;
 
-# Represents a stream of timestamps.
-public class TimestampStream {
-    private stream<anydata, error?> anydataStream;
-
-    # Initialize the stream.
-    #
-    # + anydataStream - anydata stream
-    public isolated function init(stream<anydata, error?> anydataStream) {
-        self.anydataStream = anydataStream;
-    }
-
-    # Retrieve the next value of the stream.
-    #
-    # + return - Returns the next value of the stream or else an error
-    public isolated function next() returns record {|time:Utc value;|}|error? {
-        var streamValue = self.anydataStream.next();
-        if streamValue is error? {
-            return streamValue;
-        } else {
-            return {value: <time:Utc>streamValue.value.cloneReadOnly()};
-        }
-    }
-
-    # Close the stream.
-    #
-    # + return - Returns an error if failed to close the stream
-    public isolated function close() returns error? {
-        return self.anydataStream.close();
-    }
-}
-
 # Context representation record of a timestamp stream.
 #
 # + content - Stream of timestamp values

@@ -14,37 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# Represents a stream of structs.
-public class StructStream {
-    private stream<anydata, error?> anydataStream;
-
-    # Initialize the stream.
-    #
-    # + anydataStream - anydata stream
-    public isolated function init(stream<anydata, error?> anydataStream) {
-        self.anydataStream = anydataStream;
-    }
-
-    # Retrieve the next value of the stream.
-    #
-    # + return - Returns the next value of the stream or else an error
-    public isolated function next() returns record {|map<anydata> value;|}|error? {
-        var streamValue = self.anydataStream.next();
-        if streamValue is error? {
-            return streamValue;
-        } else {
-            return {value: <map<anydata>>streamValue.value};
-        }
-    }
-
-    # Close the stream.
-    #
-    # + return - Returns an error if failed to close the stream
-    public isolated function close() returns error? {
-        return self.anydataStream.close();
-    }
-}
-
 # Context representation record of a struct stream.
 #
 # + content - Stream of structs(gRPC `Struct` is represented using `map<anydata>`)

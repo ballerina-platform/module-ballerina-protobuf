@@ -22,14 +22,6 @@ import ballerina/protobuf.types.duration;
 isolated function testDuration() {
     time:Seconds[] timeSecondsArray = [13920.47174281, 13925.537172236, 13949.130786649, 14268.816789336];
     stream<time:Seconds> timeSecondsStream = timeSecondsArray.toStream();
-    duration:DurationStream outputStream = new duration:DurationStream(timeSecondsStream);
-
-    test:assertEquals(outputStream.next(), {"value": timeSecondsArray[0]});
-    test:assertEquals(outputStream.next(), {"value": timeSecondsArray[1]});
-    test:assertEquals(outputStream.next(), {"value": timeSecondsArray[2]});
-
-    var result = outputStream.close();
-    test:assertFalse(result is error);
 
     duration:ContextDuration contextDuration = {content: 13920.47174281,
                                    headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
