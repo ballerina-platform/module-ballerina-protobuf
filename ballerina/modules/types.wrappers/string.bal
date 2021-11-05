@@ -14,37 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# Represents a stream of strings.
-public class StringStream {
-    private stream<anydata, error?> anydataStream;
-
-    # Initialize the stream.
-    #
-    # + anydataStream - anydata stream
-    public isolated function init(stream<anydata, error?> anydataStream) {
-        self.anydataStream = anydataStream;
-    }
-
-    # Retrieve the next value of the stream.
-    #
-    # + return - Returns the next value of the stream or else an error
-    public isolated function next() returns record {|string value;|}|error? {
-        var streamValue = self.anydataStream.next();
-        if streamValue is error? {
-            return streamValue;
-        } else {
-            return {value: <string>streamValue.value};
-        }
-    }
-
-    # Close the stream.
-    #
-    # + return - Returns an error if failed to close the stream
-    public isolated function close() returns error? {
-        return self.anydataStream.close();
-    }
-}
-
 # Context representation record of a string stream.
 #
 # + content - Stream of string values

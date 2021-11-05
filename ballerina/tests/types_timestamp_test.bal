@@ -23,14 +23,6 @@ isolated function testTimestamp() {
     time:Utc[] timeUtcArray = [[1629435635, 0.970213000], [1629435691, 0.629909000], [1629435768, 0.118879000],
                                [1629435786, 0.952124000]];
     stream<time:Utc> timeUtcStream = timeUtcArray.toStream();
-    timestamp:TimestampStream outputStream = new timestamp:TimestampStream(timeUtcStream);
-
-    test:assertEquals(outputStream.next(), {"value": timeUtcArray[0]});
-    test:assertEquals(outputStream.next(), {"value": timeUtcArray[1]});
-    test:assertEquals(outputStream.next(), {"value": timeUtcArray[2]});
-
-    var result = outputStream.close();
-    test:assertFalse(result is error);
 
     timestamp:ContextTimestamp contextTimestamp = {content: [1629435635, 0.970213000],
                                    headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};

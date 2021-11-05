@@ -22,14 +22,6 @@ isolated function testStruct() {
     map<anydata>[] structArray = [{name: "Alex", age: 29}, {subject: "Maths", pass: true}, {GPA: 3.985},
                                   {country: "USA", state: "California", city: "San Fransisco"}];
     stream<map<anydata>> structStream = structArray.toStream();
-    struct:StructStream outputStream = new struct:StructStream(structStream);
-
-    test:assertEquals(outputStream.next(), {"value": {name: "Alex", age: 29}});
-    test:assertEquals(outputStream.next(), {"value": {subject: "Maths", pass: true}});
-    test:assertEquals(outputStream.next(), {"value": {GPA: 3.985}});
-
-    var result = outputStream.close();
-    test:assertFalse(result is error);
 
     struct:ContextStruct contextStruct = {content: {name: "Alex", age: 29},
                                    headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
