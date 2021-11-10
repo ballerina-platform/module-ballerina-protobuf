@@ -47,7 +47,9 @@ import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_
  */
 public class AnyTypeCreator {
 
-    private AnyTypeCreator() {}
+    private AnyTypeCreator() {
+
+    }
 
     public static BString externGetNameFromRecord(BMap<BString, Object> value) {
 
@@ -70,10 +72,11 @@ public class AnyTypeCreator {
             return value.getBooleanValue(StringUtils.fromString(ANY_FIELD_VALUE));
         } else if (WRAPPER_STRING_TYPE_NAME.equals(typeUrl) && expectedTypeTag == TypeTags.STRING_TAG) {
             return value.getStringValue(StringUtils.fromString(ANY_FIELD_VALUE));
-        } else if (WRAPPER_BYTES_TYPE_NAME.equals(typeUrl) && expectedTypeTag == TypeTags.BYTE_ARRAY_TAG) {
+        } else if (WRAPPER_BYTES_TYPE_NAME.equals(typeUrl) && expectedTypeTag == TypeTags.ARRAY_TAG &&
+                targetType.getDescribingType().toString().equals("byte[]")) {
             return value.getArrayValue(StringUtils.fromString(ANY_FIELD_VALUE));
-        } else if (EMPTY_TYPE_NAME.equals(typeUrl) && expectedTypeTag == TypeTags.NONE_TAG) {
-            return value.get(StringUtils.fromString(ANY_FIELD_VALUE));
+        } else if (EMPTY_TYPE_NAME.equals(typeUrl) && expectedTypeTag == TypeTags.NULL_TAG) {
+            return null;
         } else if (TIMESTAMP_TYPE_NAME.equals(typeUrl) && expectedTypeTag == TypeTags.INTERSECTION_TAG) {
             BArray utcTime = value.getArrayValue(StringUtils.fromString(ANY_FIELD_VALUE));
             utcTime.freezeDirect();
