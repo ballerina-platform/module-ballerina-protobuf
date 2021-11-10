@@ -79,7 +79,7 @@ public isolated function unpack(Any anyValue, ValueTypeDesc targetTypeOfAny = <>
 # Return the Any type URL from the given Ballerina type.
 #
 # + anyMessage - Any type message
-# + return - Type URL suffex of the given message type
+# + return - Type URL suffix of the given message type
 isolated function getUrlSuffixFromValue(ValueType anyMessage) returns string {
     if anyMessage is float {
         return "google.protobuf.FloatValue";
