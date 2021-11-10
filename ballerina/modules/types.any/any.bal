@@ -57,7 +57,7 @@ public type ContextAnyStream record {|
     map<string|string[]> headers;
 |};
 
-# Generate and return the generic `'any:Any` record that used to represent protobuf `Any` type.
+# Generate and return the generic `'any:Any` record that is used to represent protobuf `Any` type.
 #
 # + message - The record or the scalar value to be packed as Any type
 # + return - Any value representation of the given message
