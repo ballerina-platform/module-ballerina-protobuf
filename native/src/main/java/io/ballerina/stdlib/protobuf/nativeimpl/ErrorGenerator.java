@@ -29,6 +29,8 @@ import io.ballerina.runtime.api.values.BError;
  */
 public class ErrorGenerator {
 
+    private ErrorGenerator() {}
+
     public static BError createError(Errors errorType, String errorMsg) {
 
         return ErrorCreator.createError(ModuleUtils.getProtoTypesAnyModule(), errorType.name(),

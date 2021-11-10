@@ -26,6 +26,7 @@ import io.ballerina.runtime.api.Module;
  * @since 1.0.1
  */
 public class ProtoTypesUtils {
+    private ProtoTypesUtils() {}
 
     public static Module getProtoTypesAnyModule() {
 

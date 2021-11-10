@@ -25,6 +25,8 @@ package io.ballerina.stdlib.protobuf.nativeimpl;
  */
 public class ProtobufConstants {
 
+    private ProtobufConstants() {}
+
     // Protobuf predefined messages paths
     public static final String WRAPPER_DOUBLE_TYPE_NAME = "type.googleapis.com/google.protobuf.DoubleValue";
     public static final String WRAPPER_FLOAT_TYPE_NAME = "type.googleapis.com/google.protobuf.FloatValue";

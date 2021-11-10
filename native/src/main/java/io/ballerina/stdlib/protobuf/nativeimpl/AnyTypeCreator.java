@@ -18,7 +18,6 @@
 
 package io.ballerina.stdlib.protobuf.nativeimpl;
 
-import io.ballerina.runtime.api.Environment;
 import io.ballerina.runtime.api.TypeTags;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BArray;
@@ -48,12 +47,14 @@ import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_
  */
 public class AnyTypeCreator {
 
+    private AnyTypeCreator() {}
+
     public static BString externGetNameFromRecord(BMap<BString, Object> value) {
 
         return StringUtils.fromString(value.getType().getName());
     }
 
-    public static Object unpack(Environment env, BMap<BString, Object> value, BTypedesc targetType) {
+    public static Object unpack(BMap<BString, Object> value, BTypedesc targetType) {
 
         int expectedTypeTag = targetType.getDescribingType().getTag();
         String typeUrl = value.getStringValue(StringUtils.fromString(ANY_FIELD_TYPE_URL)).getValue();
