@@ -16,6 +16,7 @@
 
 import ballerina/test;
 import ballerina/time;
+import ballerina/jballerina.java;
 
 type BytesType byte[];
 type NilType ();
@@ -213,3 +214,13 @@ isolated function testAnyRecords() {
     test:assertEquals(anyContext.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
     test:assertEquals(contextAnyStream.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
 }
+
+@test:Config {}
+isolated function testGetProtoTypesAnyModule() {
+    _ = getProtoTypesAnyModuleForTest();
+}
+
+isolated function getProtoTypesAnyModuleForTest() returns handle = @java:Method {
+    'class: "io.ballerina.stdlib.protobuf.nativeimpl.ProtoTypesUtils",
+    name: "getProtoTypesAnyModule"
+} external;
