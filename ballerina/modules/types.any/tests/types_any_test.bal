@@ -56,29 +56,34 @@ isolated function testPackAndUnpack() returns Error? {
     test:assertEquals(unpackedUint32, uint32Value);
 
     string stringValue = "string value";
-    Any anyString = {typeUrl: "type.googleapis.com/google.protobuf.StringValue", value: stringValue};
+    Any anyString = pack(stringValue);
     string unpackedString = check unpack(anyString, string);
     test:assertEquals(unpackedString, stringValue);
 
     boolean booleanValue = true;
-    Any anyBoolean = {typeUrl: "type.googleapis.com/google.protobuf.BoolValue", value: booleanValue};
+    Any anyBoolean = pack(booleanValue);
     boolean unpackedBoolean = check unpack(anyBoolean, boolean);
     test:assertEquals(unpackedBoolean, booleanValue);
 
     time:Utc timestampValue = time:utcNow();
-    Any anyTimestamp = {typeUrl: "type.googleapis.com/google.protobuf.Timestamp", value: timestampValue};
+    Any anyTimestamp = pack(timestampValue);
     time:Utc unpackedTimestamp = check unpack(anyTimestamp, time:Utc);
     test:assertEquals(unpackedTimestamp, timestampValue);
 
     time:Seconds durationValue = 1002d;
-    Any anyDuration = {typeUrl: "type.googleapis.com/google.protobuf.Duration", value: durationValue};
+    Any anyDuration = pack(durationValue);
     time:Seconds unpackedDuration = check unpack(anyDuration, time:Seconds);
     test:assertEquals(unpackedDuration, durationValue);
 
     Person person = {name: "John", code: 23};
-    Any anyRecord = {typeUrl: "type.googleapis.com/Person", value: person};
+    Any anyRecord = pack(person);
     Person unpackedPerson = check unpack(anyRecord, Person);
     test:assertEquals(unpackedPerson, person);
+
+    ValueType genericValue = 234f;
+    Any anyFloatGeneric = pack(genericValue);
+    float unpackedFloatGeneric = check unpack(anyFloatGeneric, float);
+    test:assertEquals(unpackedFloatGeneric, genericValue);
 }
 
 @test:Config {}
@@ -93,4 +98,43 @@ isolated function testUnpackError() {
     } else {
         test:assertFail("Expected 'any:Error not found");
     }
+}
+
+@test:Config {}
+isolated function testGetUrlSuffix() {
+    Person person = {name: "John", code: 23};
+
+    test:assertEquals(getUrlSuffixFromValue(234f), "google.protobuf.FloatValue");
+    test:assertEquals(getUrlSuffixFromValue(234), "google.protobuf.Int64Value");
+    test:assertEquals(getUrlSuffixFromValue("Ballerina"), "google.protobuf.StringValue");
+    test:assertEquals(getUrlSuffixFromValue(false), "google.protobuf.BoolValue");
+    test:assertEquals(getUrlSuffixFromValue(time:utcNow()), "google.protobuf.Timestamp");
+    test:assertEquals(getUrlSuffixFromValue(<time:Seconds>1002d), "google.protobuf.Duration");
+    test:assertEquals(getUrlSuffixFromValue(()), "google.protobuf.Empty");
+    test:assertEquals(getUrlSuffixFromValue(person), "Person");
+}
+
+@test:Config {}
+isolated function testGetNameFromRecord() {
+    Person person = {name: "John", code: 23};
+    test:assertEquals(externGetNameFromRecord(person), "Person");
+}
+
+@test:Config {}
+isolated function testAnyRecords() {
+    Any[] anyTypeArr = [
+        pack(<Person>{name: "John", code: 23}),
+        pack("Hello"),
+        pack(10)
+    ];
+    Person person = {name: "John", code: 23};
+    Any anyRecord = pack(person);
+    ContextAny anyContext = {content: anyRecord, headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+    ContextAnyStream contextAnyStream = {content: anyTypeArr.toStream(), headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+
+    test:assertEquals(anyRecord.typeUrl, "type.googleapis.com/Person");
+    test:assertEquals(anyRecord.value, person);
+    test:assertEquals(anyContext.content, anyRecord);
+    test:assertEquals(anyContext.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
+    test:assertEquals(contextAnyStream.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
 }
