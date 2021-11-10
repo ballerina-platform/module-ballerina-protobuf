@@ -19,7 +19,7 @@ import ballerina/time;
 import ballerina/protobuf;
 
 # Subtypes that are allowed as Any type.
-public type ValueType int|float|string|boolean|time:Utc|time:Seconds|record {}|();
+public type ValueType int|float|string|boolean|time:Utc|time:Seconds|record {}|()|byte[];
 
 # Type descriptor of ValueType.
 public type ValueTypeDesc typedesc<ValueType>;
@@ -87,6 +87,8 @@ isolated function getUrlSuffixFromValue(ValueType anyMessage) returns string {
         return "google.protobuf.Int64Value";
     } else if anyMessage is string {
         return "google.protobuf.StringValue";
+    } else if anyMessage is byte[] {
+        return "google.protobuf.BytesValue";
     } else if anyMessage is boolean {
         return "google.protobuf.BoolValue";
     } else if anyMessage is time:Utc {
@@ -94,6 +96,8 @@ isolated function getUrlSuffixFromValue(ValueType anyMessage) returns string {
     } else if anyMessage is time:Seconds {
         return "google.protobuf.Duration";
     } else if anyMessage is () {
+        return "google.protobuf.Empty";
+    } else if anyMessage is record {||} {
         return "google.protobuf.Empty";
     } else {
         return externGetNameFromRecord(anyMessage);
