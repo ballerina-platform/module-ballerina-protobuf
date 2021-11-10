@@ -14,5 +14,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# Represents protobuf module error.
-public type Error distinct error;
+import ballerina/test;
+import ballerina/protobuf.types.empty;
+
+@test:Config {}
+isolated function testEmpty() {
+
+    empty:Empty empty = {};
+    empty:ContextNil nilContext = {headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+
+    test:assertEquals(empty, {});
+    test:assertEquals(nilContext.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
+}

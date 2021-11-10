@@ -14,5 +14,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# Represents protobuf module error.
-public type Error distinct error;
+import ballerina/jballerina.java;
+
+function init() {
+    setProtoTypesAnyModule();
+}
+
+function setProtoTypesAnyModule() = @java:Method {
+    'class: "io.ballerina.stdlib.protobuf.nativeimpl.ModuleUtils"
+} external;
