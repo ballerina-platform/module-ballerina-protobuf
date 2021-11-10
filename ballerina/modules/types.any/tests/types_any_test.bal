@@ -17,6 +17,9 @@
 import ballerina/test;
 import ballerina/time;
 
+type BytesType byte[];
+type NilType ();
+
 public type Person record {|
     string name = "";
     int code = 0;
@@ -83,6 +86,34 @@ isolated function testPackAndUnpackForString() returns Error? {
     Any anyString = pack(stringValue);
     string unpackedString = check unpack(anyString, string);
     test:assertEquals(unpackedString, stringValue);
+}
+
+@test:Config {}
+isolated function testPackAndUnpackForBytes() returns Error? {
+
+    string stringValue = "string value";
+    byte[] bytes = stringValue.toBytes();
+    Any anyBytes = pack(bytes);
+    Any expectedBytes = {typeUrl: "type.googleapis.com/google.protobuf.BytesValue", value: bytes};
+    test:assertEquals(anyBytes, expectedBytes);
+
+    BytesType unpackedBytes = check unpack(anyBytes, BytesType);
+    test:assertEquals(unpackedBytes, bytes);
+}
+
+@test:Config {}
+isolated function testPackAndUnpackForNil() returns Error? {
+
+    Any anyNil1 = pack(());
+    Any expectedNil = {typeUrl: "type.googleapis.com/google.protobuf.Empty", value: ()};
+    test:assertEquals(anyNil1, expectedNil);
+
+    NilType unpackedNil1 = check unpack(anyNil1, NilType);
+    test:assertEquals(unpackedNil1, ());
+
+    Any anyNil2 = {typeUrl: "type.googleapis.com/google.protobuf.Empty", value: {}};
+    NilType unpackedNil2 = check unpack(anyNil2, NilType);
+    test:assertEquals(unpackedNil2, ());
 }
 
 @test:Config {}
