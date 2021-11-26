@@ -189,3 +189,51 @@ public type Empty record {|
 ```
 
 ## 7. Any
+
+This provides APIs to represent `google/protobuf/any.proto`.
+
+The `Any` record is the Ballerina representation of the protobuf `Any` type. The `typeUrl` is the unique identifier of the serialized message, and the value contains the serialized message content. The type of the `value` entry defines as `ValueType`, which represent all the Ballerina types that support as subtypes of `Any`.
+
+```ballerina
+public type Any record {|
+    string typeUrl;
+    ValueType value;
+|};
+```
+
+There are two APIs to serialize and deserialize the `Any` type values as follows.
+
+```ballerina
+# Generate and return the generic `'any:Any` record that used to represent protobuf `Any` type.
+#
+# + message - The record or the scalar value to be packed as Any type
+# + return - Any value representation of the given message  
+public isolated function pack(ValueType message) returns Any;
+
+# Unpack and return the specified Ballerina value
+#
+# + anyValue - Any value to be unpacked
+# + targetTypeOfAny - Type descriptor of the return value
+# + return - Return a value of the given type  
+public isolated function unpack(Any anyValue, ValueTypeDesc targetTypeOfAny = <>) returns targetTypeOfAny|'any:Error;
+```
+
+
+The `ContextAny` is a context representation record of `Any` Ballerina record.
+```ballerina
+public type ContextAny record {|
+    Any content;
+    map<string|string[]> headers;
+|};
+```
+
+The `ContextAnyStream` is the stream representation that contains a stream of `Any` records as the content.
+```ballerina
+public type ContextAnyStream record {|
+    stream<Any, error?> content;
+    map<string|string[]> headers;
+|};
+```
+
+
+
