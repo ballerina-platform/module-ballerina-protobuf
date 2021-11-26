@@ -32,7 +32,7 @@ This provides APIs to represent `google/protobuf/wrappers.proto`. The protobuf m
 
 ### 2.1. String type
 The `ContextStringStream` is a context representation record of a string stream.
-```
+```ballerina
 public type ContextStringStream record {|
     stream<string, error?> content;
     map<string|string[]> headers;
@@ -40,7 +40,7 @@ public type ContextStringStream record {|
 ```
 
 The `ContextString` is a context representation record of a string value.
-```
+```ballerina
 public type ContextString record {|
     string content;
     map<string|string[]> headers;
@@ -49,7 +49,7 @@ public type ContextString record {|
 
 ### 2.2. Integer type
 The `ContextIntStream` is a context representation record of an integer stream.
-```
+```ballerina
 public type ContextIntStream record {|
     stream<int, error?> content;
     map<string|string[]> headers;
@@ -57,7 +57,7 @@ public type ContextIntStream record {|
 ```
 
 The `ContextInt` is a context representation record of an integer value.
-```
+```ballerina
 public type ContextInt record {|
     int content;
     map<string|string[]> headers;
@@ -66,7 +66,7 @@ public type ContextInt record {|
 
 ### 2.3. Float type
 The `ContextFloatStream` is a context representation record of a float stream.
-```
+```ballerina
 public type ContextFloatStream record {|
     stream<float, error?> content;
     map<string|string[]> headers;
@@ -74,7 +74,7 @@ public type ContextFloatStream record {|
 ```
 
 The `ContextFloat` is a context representation record of a float value.
-```
+```ballerina
 public type ContextFloat record {|
     float content;
     map<string|string[]> headers;
@@ -83,7 +83,7 @@ public type ContextFloat record {|
 
 ### 2.4. Boolean type
 The `ContextBooleanStream` is a context representation record of a boolean stream.
-```
+```ballerina
 public type ContextBooleanStream record {|
     stream<boolean, error?> content;
     map<string|string[]> headers;
@@ -91,7 +91,7 @@ public type ContextBooleanStream record {|
 ```
 
 The `ContextBoolean` is a context representation record of a boolean value.
-```
+```ballerina
 public type ContextBoolean record {|
     boolean content;
     map<string|string[]> headers;
@@ -100,7 +100,7 @@ public type ContextBoolean record {|
 
 ### 2.5. Bytes type
 The `ContextBytesStream` is a context representation record of a byte array stream.
-```
+```ballerina
 public type ContextBytesStream record {|
     stream<byte[], error?> content;
     map<string|string[]> headers;
@@ -108,7 +108,7 @@ public type ContextBytesStream record {|
 ```
 
 The `ContextBytes` is a context representation record of a byte array.
-```
+```ballerina
 public type ContextBytes record {|
     byte[] content;
     map<string|string[]> headers;
@@ -119,7 +119,7 @@ public type ContextBytes record {|
 This provides APIs to represent `google/protobuf/duration.proto`.
 
 The `ContextDurationStream` is a context representation record of a duration stream.
-```
+```ballerina
 public type ContextDurationStream record {|
     stream<time:Seconds, error?> content;
     map<string|string[]> headers;
@@ -127,7 +127,7 @@ public type ContextDurationStream record {|
 ```
 
 The `ContextDuration` is a context representation record of a duration. The content is a time duration represented using `time:Seconds`. The `time:Seconds` is a subtype of Ballerina `decimal` type.
-```
+```ballerina
 public type ContextDuration record {|
     time:Seconds content;
     map<string|string[]> headers;
@@ -138,7 +138,7 @@ public type ContextDuration record {|
 This provides APIs to represent `google/protobuf/struct.proto`.
 
 The `ContextStructStream` is a context representation record of a struct stream.
-```
+```ballerina
 public type ContextStructStream record {|
     stream<map<anydata>, error?> content;
     map<string|string[]> headers;
@@ -146,7 +146,7 @@ public type ContextStructStream record {|
 ```
 
 The `ContextStruct` is a representation record of a struct.
-```
+```ballerina
 public type ContextStruct record {|
     map<anydata> content;
     map<string|string[]> headers;
@@ -157,7 +157,7 @@ public type ContextStruct record {|
 This provides APIs to represent `google/protobuf/timestamp.proto`.
 
 The `ContextTimestampStream` is a context representation record of a timestamp stream.
-```
+```ballerina
 public type ContextTimestampStream record {|
     stream<time:Utc, error?> content;
     map<string|string[]> headers;
@@ -165,7 +165,7 @@ public type ContextTimestampStream record {|
 ```
 
 The `ContextTimestamp` is a representation record of a timestamp.
-```
+```ballerina
 public type ContextTimestamp record {|
     time:Utc content;
     map<string|string[]> headers;
@@ -176,14 +176,14 @@ public type ContextTimestamp record {|
 This provides APIs to represent `google/protobuf/empty.proto`.
 
 The `ContextNil` is a representation record of a gRPC Empty message.
-```
+```ballerina
 public type ContextNil record {|
     map<string|string[]> headers;
 |};
 ```
 
 `Empty` represents an empty record.
-```
+```ballerina
 public type Empty record {|
 |};
 ```
