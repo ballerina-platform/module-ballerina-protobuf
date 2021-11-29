@@ -218,7 +218,6 @@ public isolated function pack(ValueType message) returns Any;
 public isolated function unpack(Any anyValue, ValueTypeDesc targetTypeOfAny = <>) returns targetTypeOfAny|'any:Error;
 ```
 
-
 The `ContextAny` is a context representation record of `Any` Ballerina record.
 ```ballerina
 public type ContextAny record {|
@@ -234,6 +233,4 @@ public type ContextAnyStream record {|
     map<string|string[]> headers;
 |};
 ```
-
-
 
