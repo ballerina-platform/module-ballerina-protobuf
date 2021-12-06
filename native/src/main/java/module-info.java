@@ -18,5 +18,6 @@
 
 module io.ballerina.stdlib.protobuf {
     requires io.ballerina.runtime;
+    requires io.ballerina.lang.value;
     exports io.ballerina.stdlib.protobuf.nativeimpl;
 }
