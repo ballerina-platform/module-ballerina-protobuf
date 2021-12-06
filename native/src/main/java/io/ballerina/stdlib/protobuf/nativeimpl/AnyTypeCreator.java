@@ -24,6 +24,7 @@ import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.runtime.api.values.BTypedesc;
+import org.ballerinalang.langlib.value.CloneWithType;
 
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_FIELD_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_FIELD_VALUE;
@@ -84,7 +85,7 @@ public class AnyTypeCreator {
         } else if (DURATION_TYPE_NAME.equals(typeUrl) && expectedTypeTag == TypeTags.DECIMAL_TAG) {
             return value.get(StringUtils.fromString(ANY_FIELD_VALUE));
         } else if (expectedTypeTag == TypeTags.RECORD_TYPE_TAG) {
-            return value.getMapValue(StringUtils.fromString(ANY_FIELD_VALUE));
+            return CloneWithType.cloneWithType(value.getMapValue(StringUtils.fromString(ANY_FIELD_VALUE)), targetType);
         } else {
             String errorMessage = "Type " + typeUrl + " cannot unpack to " + targetType.getDescribingType().getName();
             return ErrorGenerator.createError(Errors.TypeMismatchError, errorMessage);
