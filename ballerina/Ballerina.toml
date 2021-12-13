@@ -10,4 +10,4 @@ distribution = "slbeta6"
 export = ["protobuf", "protobuf.types.any", "protobuf.types.duration", "protobuf.types.empty", "protobuf.types.struct", "protobuf.types.timestamp", "protobuf.types.wrappers"]
 
 [[platform.java11.dependency]]
-path = "../native/build/libs/protobuf-native-1.1.0-SNAPSHOT.jar"
+path = "../native/build/libs/protobuf-native-1.1.0.jar"
