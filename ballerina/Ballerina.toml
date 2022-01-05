@@ -5,6 +5,7 @@ version = "1.2.0"
 authors = ["Ballerina"]
 keywords = ["wrappers"]
 repository = "https://github.com/ballerina-platform/module-ballerina-protobuf"
+icon = "icon.png"
 license = ["Apache-2.0"]
 distribution = "2201.0.0"
 export = ["protobuf", "protobuf.types.any", "protobuf.types.duration", "protobuf.types.empty", "protobuf.types.struct", "protobuf.types.timestamp", "protobuf.types.wrappers"]
