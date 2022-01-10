@@ -99,9 +99,10 @@ isolated function getUrlSuffixFromValue(ValueType anyMessage) returns string {
         return "google.protobuf.Empty";
     } else if anyMessage is record {||} {
         return "google.protobuf.Empty";
-    } else {
+    } else if anyMessage is record {} {
         return externGetNameFromRecord(anyMessage);
     }
+    return "";
 }
 
 isolated function externGetNameFromRecord(record {} rec) returns string = @java:Method {
