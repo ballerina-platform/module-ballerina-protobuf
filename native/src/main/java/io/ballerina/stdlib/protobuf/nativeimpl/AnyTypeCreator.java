@@ -26,9 +26,6 @@ import io.ballerina.runtime.api.values.BString;
 import io.ballerina.runtime.api.values.BTypedesc;
 import org.ballerinalang.langlib.value.CloneWithType;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_FIELD_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_FIELD_VALUE;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.DURATION_TYPE_NAME;
@@ -51,8 +48,6 @@ import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_
  */
 public class AnyTypeCreator {
 
-    private static final Map<String, Integer> typesMap = new HashMap<>();
-
     private AnyTypeCreator() {
 
     }
@@ -63,20 +58,6 @@ public class AnyTypeCreator {
     }
 
     public static Object unpack(BMap<BString, Object> value, BTypedesc targetType) {
-        typesMap.put(WRAPPER_DOUBLE_TYPE_NAME, TypeTags.FLOAT_TAG);
-        typesMap.put(WRAPPER_FLOAT_TYPE_NAME, TypeTags.FLOAT_TAG);
-
-        typesMap.put(WRAPPER_INT64_TYPE_NAME, TypeTags.INT_TAG);
-        typesMap.put(WRAPPER_UINT64_TYPE_NAME, TypeTags.INT_TAG);
-        typesMap.put(WRAPPER_INT32_TYPE_NAME, TypeTags.INT_TAG);
-        typesMap.put(WRAPPER_UINT32_TYPE_NAME, TypeTags.INT_TAG);
-
-        typesMap.put(WRAPPER_BOOL_TYPE_NAME, TypeTags.BOOLEAN_TAG);
-        typesMap.put(WRAPPER_STRING_TYPE_NAME, TypeTags.STRING_TAG);
-        typesMap.put(WRAPPER_BYTES_TYPE_NAME, TypeTags.ARRAY_TAG);
-        typesMap.put(EMPTY_TYPE_NAME, TypeTags.NULL_TAG);
-        typesMap.put(TIMESTAMP_TYPE_NAME, TypeTags.INTERSECTION_TAG);
-        typesMap.put(DURATION_TYPE_NAME, TypeTags.DECIMAL_TAG);
 
         int expectedTypeTag = targetType.getDescribingType().getTag();
         String typeUrl = value.getStringValue(StringUtils.fromString(ANY_FIELD_TYPE_URL)).getValue();
@@ -123,8 +104,8 @@ public class AnyTypeCreator {
     }
 
     private static boolean isMatchingType(String typeUrl, int typeTag) {
-        if (typesMap.containsKey(typeUrl)) {
-            return typesMap.get(typeUrl) == typeTag;
+        if (ModuleUtils.getAnyTypeMap().containsKey(typeUrl)) {
+            return ModuleUtils.getAnyTypeMap().get(typeUrl) == typeTag;
         }
         return false;
     }
