@@ -20,6 +20,23 @@ package io.ballerina.stdlib.protobuf.nativeimpl;
 
 import io.ballerina.runtime.api.Environment;
 import io.ballerina.runtime.api.Module;
+import io.ballerina.runtime.api.TypeTags;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.DURATION_TYPE_NAME;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.EMPTY_TYPE_NAME;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.TIMESTAMP_TYPE_NAME;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_BOOL_TYPE_NAME;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_BYTES_TYPE_NAME;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_DOUBLE_TYPE_NAME;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_FLOAT_TYPE_NAME;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_INT32_TYPE_NAME;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_INT64_TYPE_NAME;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_STRING_TYPE_NAME;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_UINT32_TYPE_NAME;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_UINT64_TYPE_NAME;
 
 /**
  * APIs to set and get module-level details.
@@ -32,6 +49,7 @@ public class ModuleUtils {
      * Package ID of the protobuf.types.'any sub-module.
      */
     private static Module protoTypesAnyModule = null;
+    private static final Map<String, Integer> anyTypesMap = new HashMap<>();
 
     private ModuleUtils() {
 
@@ -40,10 +58,30 @@ public class ModuleUtils {
     public static void setProtoTypesAnyModule(Environment env) {
 
         protoTypesAnyModule = env.getCurrentModule();
+
+        anyTypesMap.put(WRAPPER_DOUBLE_TYPE_NAME, TypeTags.FLOAT_TAG);
+        anyTypesMap.put(WRAPPER_FLOAT_TYPE_NAME, TypeTags.FLOAT_TAG);
+
+        anyTypesMap.put(WRAPPER_INT64_TYPE_NAME, TypeTags.INT_TAG);
+        anyTypesMap.put(WRAPPER_UINT64_TYPE_NAME, TypeTags.INT_TAG);
+        anyTypesMap.put(WRAPPER_INT32_TYPE_NAME, TypeTags.INT_TAG);
+        anyTypesMap.put(WRAPPER_UINT32_TYPE_NAME, TypeTags.INT_TAG);
+
+        anyTypesMap.put(WRAPPER_BOOL_TYPE_NAME, TypeTags.BOOLEAN_TAG);
+        anyTypesMap.put(WRAPPER_STRING_TYPE_NAME, TypeTags.STRING_TAG);
+        anyTypesMap.put(WRAPPER_BYTES_TYPE_NAME, TypeTags.ARRAY_TAG);
+        anyTypesMap.put(EMPTY_TYPE_NAME, TypeTags.NULL_TAG);
+        anyTypesMap.put(TIMESTAMP_TYPE_NAME, TypeTags.INTERSECTION_TAG);
+        anyTypesMap.put(DURATION_TYPE_NAME, TypeTags.DECIMAL_TAG);
     }
 
     public static Module getProtoTypesAnyModule() {
 
         return protoTypesAnyModule;
+    }
+
+    public static Map<String, Integer> getAnyTypeMap() {
+
+        return anyTypesMap;
     }
 }

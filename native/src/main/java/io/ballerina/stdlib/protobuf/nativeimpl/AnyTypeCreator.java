@@ -62,33 +62,51 @@ public class AnyTypeCreator {
         int expectedTypeTag = targetType.getDescribingType().getTag();
         String typeUrl = value.getStringValue(StringUtils.fromString(ANY_FIELD_TYPE_URL)).getValue();
 
-        if ((WRAPPER_DOUBLE_TYPE_NAME.equals(typeUrl) || WRAPPER_FLOAT_TYPE_NAME.equals(typeUrl)) &&
-                expectedTypeTag == TypeTags.FLOAT_TAG) {
-            return value.getFloatValue(StringUtils.fromString(ANY_FIELD_VALUE));
-        } else if ((WRAPPER_INT64_TYPE_NAME.equals(typeUrl) || WRAPPER_UINT64_TYPE_NAME.equals(typeUrl) ||
-                WRAPPER_INT32_TYPE_NAME.equals(typeUrl) || WRAPPER_UINT32_TYPE_NAME.equals(typeUrl)) &&
-                expectedTypeTag == TypeTags.INT_TAG) {
-            return value.getIntValue(StringUtils.fromString(ANY_FIELD_VALUE));
-        } else if (WRAPPER_BOOL_TYPE_NAME.equals(typeUrl) && expectedTypeTag == TypeTags.BOOLEAN_TAG) {
-            return value.getBooleanValue(StringUtils.fromString(ANY_FIELD_VALUE));
-        } else if (WRAPPER_STRING_TYPE_NAME.equals(typeUrl) && expectedTypeTag == TypeTags.STRING_TAG) {
-            return value.getStringValue(StringUtils.fromString(ANY_FIELD_VALUE));
-        } else if (WRAPPER_BYTES_TYPE_NAME.equals(typeUrl) && expectedTypeTag == TypeTags.ARRAY_TAG &&
-                targetType.getDescribingType().toString().equals("byte[]")) {
-            return value.getArrayValue(StringUtils.fromString(ANY_FIELD_VALUE));
-        } else if (EMPTY_TYPE_NAME.equals(typeUrl) && expectedTypeTag == TypeTags.NULL_TAG) {
-            return null;
-        } else if (TIMESTAMP_TYPE_NAME.equals(typeUrl) && expectedTypeTag == TypeTags.INTERSECTION_TAG) {
-            BArray utcTime = value.getArrayValue(StringUtils.fromString(ANY_FIELD_VALUE));
-            utcTime.freezeDirect();
-            return utcTime;
-        } else if (DURATION_TYPE_NAME.equals(typeUrl) && expectedTypeTag == TypeTags.DECIMAL_TAG) {
-            return value.get(StringUtils.fromString(ANY_FIELD_VALUE));
-        } else if (expectedTypeTag == TypeTags.RECORD_TYPE_TAG) {
-            return CloneWithType.cloneWithType(value.getMapValue(StringUtils.fromString(ANY_FIELD_VALUE)), targetType);
+        if (isMatchingType(typeUrl, expectedTypeTag)) {
+            switch (typeUrl) {
+                case WRAPPER_DOUBLE_TYPE_NAME:
+                case WRAPPER_FLOAT_TYPE_NAME:
+                    return value.getFloatValue(StringUtils.fromString(ANY_FIELD_VALUE));
+                case WRAPPER_INT64_TYPE_NAME:
+                case WRAPPER_UINT64_TYPE_NAME:
+                case WRAPPER_INT32_TYPE_NAME:
+                case WRAPPER_UINT32_TYPE_NAME:
+                    return value.getIntValue(StringUtils.fromString(ANY_FIELD_VALUE));
+                case WRAPPER_BOOL_TYPE_NAME:
+                    return value.getBooleanValue(StringUtils.fromString(ANY_FIELD_VALUE));
+                case WRAPPER_STRING_TYPE_NAME:
+                    return value.getStringValue(StringUtils.fromString(ANY_FIELD_VALUE));
+                case WRAPPER_BYTES_TYPE_NAME:
+                    if (targetType.getDescribingType().toString().equals("byte[]")) {
+                        return value.getArrayValue(StringUtils.fromString(ANY_FIELD_VALUE));
+                    }
+                    break;
+                case EMPTY_TYPE_NAME:
+                    return null;
+                case TIMESTAMP_TYPE_NAME:
+                    BArray utcTime = value.getArrayValue(StringUtils.fromString(ANY_FIELD_VALUE));
+                    utcTime.freezeDirect();
+                    return utcTime;
+                case DURATION_TYPE_NAME:
+                    return value.get(StringUtils.fromString(ANY_FIELD_VALUE));
+                default:
+                    break;
+            }
+        }
+        if (expectedTypeTag == TypeTags.RECORD_TYPE_TAG) {
+            return CloneWithType.cloneWithType(value.getMapValue(StringUtils.fromString(ANY_FIELD_VALUE)),
+                    targetType);
         } else {
-            String errorMessage = "Type " + typeUrl + " cannot unpack to " + targetType.getDescribingType().getName();
+            String errorMessage = "Type " + typeUrl + " cannot unpack to " +
+                    targetType.getDescribingType().getName();
             return ErrorGenerator.createError(Errors.TypeMismatchError, errorMessage);
         }
+    }
+
+    private static boolean isMatchingType(String typeUrl, int typeTag) {
+        if (ModuleUtils.getAnyTypeMap().containsKey(typeUrl)) {
+            return ModuleUtils.getAnyTypeMap().get(typeUrl) == typeTag;
+        }
+        return false;
     }
 }
