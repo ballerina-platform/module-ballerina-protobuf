@@ -3,11 +3,18 @@
 _Owners_: @daneshk @MadhukaHarith92  
 _Reviewers_: @daneshk  
 _Created_: 2021/11/17  
-_Updated_: 2021/11/17  
+_Updated_: 2022/02/08  
+_Edition_: Swan Lake
 _Issue_: [#2343](https://github.com/ballerina-platform/ballerina-standard-library/issues/2343)
 
 # Introduction
-The Protobuf library has APIs to represent a set of pre-defined protobuf types. It is part of Ballerina Standard Library. [Ballerina programming language](https://ballerina.io/) is an open-source programming language for the cloud that makes it easier to use, combine, and create network services.
+This is the specification for the Protobuf standard library of [Ballerina language](https://ballerina.io/), which provides APIs to represent a set of pre-defined protobuf types.
+
+The Protobuf library specification has evolved and may continue to evolve in the future. Released versions of the specification can be found under the relevant Github tag.
+
+If you have any feedback or suggestions about the library, start a discussion via a [GitHub issue](https://github.com/ballerina-platform/ballerina-standard-library/issues) or in the [Slack channel](https://ballerina.io/community/). Based on the outcome of the discussion, specification and implementation can be updated. Community feedback is always welcome. Any accepted proposal which affects the specification is stored under `/docs/proposals`. Proposals under discussion can be found with the label `type/proposal` in Github.
+
+Conforming implementation of the specification is released and included in the distribution. Any deviation from the specification is considered a bug.
 
 # Contents
 
