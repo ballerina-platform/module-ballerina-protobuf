@@ -1,4 +1,4 @@
-Ballerina Protobuf Package
+Ballerina Protobuf Library
 ===================
 
 [![Build](https://github.com/ballerina-platform/module-ballerina-protobuf/actions/workflows/build-timestamped-master.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-protobuf/actions/workflows/build-timestamped-master.yml)
@@ -7,9 +7,7 @@ Ballerina Protobuf Package
 [![Github issues](https://img.shields.io/github/issues/ballerina-platform/ballerina-standard-library/module/protobuf.svg?label=Open%20Issues)](https://github.com/ballerina-platform/ballerina-standard-library/labels/module%2Fprotobuf)
 [![codecov](https://codecov.io/gh/ballerina-platform/module-ballerina-protobuf/branch/main/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerina-protobuf)
 
-The protobuf library is one of the standard library packages of the <a target="_blank" href="https://ballerina.io/">Ballerina</a> language.
-
-This package contains a set of pre-defined protobuf types.
+This library provides APIs to represent a set of pre-defined protobuf types.
 
 ## Issues and Projects
 
