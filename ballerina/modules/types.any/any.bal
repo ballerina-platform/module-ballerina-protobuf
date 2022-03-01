@@ -35,8 +35,8 @@ public type TypeMismatchError distinct Error;
 # + typeUrl - The URL identifier of the message
 # + value - The Any data message
 public type Any record {|
-    string typeUrl;
-    ValueType value;
+    string typeUrl = "";
+    ValueType value = ();
 |};
 
 # Context representation of the `Any` type.
