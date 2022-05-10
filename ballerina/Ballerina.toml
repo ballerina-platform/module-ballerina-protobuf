@@ -1,7 +1,7 @@
 [package]
 org = "ballerina"
 name = "protobuf"
-version = "1.2.1"
+version = "1.2.2"
 authors = ["Ballerina"]
 keywords = ["wrappers"]
 repository = "https://github.com/ballerina-platform/module-ballerina-protobuf"
@@ -11,4 +11,4 @@ distribution = "2201.0.1"
 export = ["protobuf", "protobuf.types.any", "protobuf.types.duration", "protobuf.types.empty", "protobuf.types.struct", "protobuf.types.timestamp", "protobuf.types.wrappers"]
 
 [[platform.java11.dependency]]
-path = "../native/build/libs/protobuf-native-1.2.1.jar"
+path = "../native/build/libs/protobuf-native-1.2.2-SNAPSHOT.jar"
