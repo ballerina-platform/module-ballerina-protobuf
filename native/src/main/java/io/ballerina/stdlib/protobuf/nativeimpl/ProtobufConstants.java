@@ -27,19 +27,35 @@ public class ProtobufConstants {
 
     private ProtobufConstants() {}
 
-    // Protobuf predefined messages paths
-    public static final String WRAPPER_DOUBLE_TYPE_NAME = "type.googleapis.com/google.protobuf.DoubleValue";
-    public static final String WRAPPER_FLOAT_TYPE_NAME = "type.googleapis.com/google.protobuf.FloatValue";
-    public static final String WRAPPER_INT64_TYPE_NAME = "type.googleapis.com/google.protobuf.Int64Value";
-    public static final String WRAPPER_UINT64_TYPE_NAME = "type.googleapis.com/google.protobuf.UInt64Value";
-    public static final String WRAPPER_INT32_TYPE_NAME = "type.googleapis.com/google.protobuf.Int32Value";
-    public static final String WRAPPER_UINT32_TYPE_NAME = "type.googleapis.com/google.protobuf.UInt32Value";
-    public static final String WRAPPER_BOOL_TYPE_NAME = "type.googleapis.com/google.protobuf.BoolValue";
-    public static final String WRAPPER_STRING_TYPE_NAME = "type.googleapis.com/google.protobuf.StringValue";
-    public static final String WRAPPER_BYTES_TYPE_NAME = "type.googleapis.com/google.protobuf.BytesValue";
-    public static final String EMPTY_TYPE_NAME = "type.googleapis.com/google.protobuf.Empty";
-    public static final String TIMESTAMP_TYPE_NAME = "type.googleapis.com/google.protobuf.Timestamp";
-    public static final String DURATION_TYPE_NAME = "type.googleapis.com/google.protobuf.Duration";
+    // Protobuf predefined messages type URLs
+    public static final String WRAPPER_DOUBLE_TYPE_URL = "type.googleapis.com/google.protobuf.DoubleValue";
+    public static final String WRAPPER_FLOAT_TYPE_URL = "type.googleapis.com/google.protobuf.FloatValue";
+    public static final String WRAPPER_INT64_TYPE_URL = "type.googleapis.com/google.protobuf.Int64Value";
+    public static final String WRAPPER_UINT64_TYPE_URL = "type.googleapis.com/google.protobuf.UInt64Value";
+    public static final String WRAPPER_INT32_TYPE_URL = "type.googleapis.com/google.protobuf.Int32Value";
+    public static final String WRAPPER_UINT32_TYPE_URL = "type.googleapis.com/google.protobuf.UInt32Value";
+    public static final String WRAPPER_BOOL_TYPE_URL = "type.googleapis.com/google.protobuf.BoolValue";
+    public static final String WRAPPER_STRING_TYPE_URL = "type.googleapis.com/google.protobuf.StringValue";
+    public static final String WRAPPER_BYTES_TYPE_URL = "type.googleapis.com/google.protobuf.BytesValue";
+    public static final String EMPTY_TYPE_URL = "type.googleapis.com/google.protobuf.Empty";
+    public static final String TIMESTAMP_TYPE_URL = "type.googleapis.com/google.protobuf.Timestamp";
+    public static final String DURATION_TYPE_URL = "type.googleapis.com/google.protobuf.Duration";
+
+    // Proto predefined messages names
+    public static final String WRAPPER_DOUBLE_TYPE_NAME = "google.protobuf.DoubleValue";
+    public static final String WRAPPER_FLOAT_TYPE_NAME = "google.protobuf.FloatValue";
+    public static final String WRAPPER_INT64_TYPE_NAME = "google.protobuf.Int64Value";
+    public static final String WRAPPER_UINT64_TYPE_NAME = "google.protobuf.UInt64Value";
+    public static final String WRAPPER_INT32_TYPE_NAME = "google.protobuf.Int32Value";
+    public static final String WRAPPER_UINT32_TYPE_NAME = "google.protobuf.UInt32Value";
+    public static final String WRAPPER_BOOL_TYPE_NAME = "google.protobuf.BoolValue";
+    public static final String WRAPPER_STRING_TYPE_NAME = "google.protobuf.StringValue";
+    public static final String WRAPPER_BYTES_TYPE_NAME = "google.protobuf.BytesValue";
+    public static final String ANY_TYPE_NAME = "google.protobuf.Any";
+    public static final String EMPTY_TYPE_NAME = "google.protobuf.Empty";
+    public static final String TIMESTAMP_TYPE_NAME = "google.protobuf.Timestamp";
+    public static final String DURATION_TYPE_NAME = "google.protobuf.Duration";
+    public static final String STRUCT_TYPE_NAME = "google.protobuf.Struct";
 
     // Protobuf Any type fields
     public static final String ANY_FIELD_TYPE_URL = "typeUrl";
