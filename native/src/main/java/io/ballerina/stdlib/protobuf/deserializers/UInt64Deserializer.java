@@ -24,17 +24,18 @@ import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
+import io.ballerina.stdlib.protobuf.messages.BMessage;
 
 import java.io.IOException;
 
 /**
- * The deserializer class, that deserializes the unsigned integer 32 data.
+ * The deserializer class, that deserializes the unsigned integer 64 data.
  */
 @SuppressWarnings("unchecked")
 public class UInt64Deserializer extends AbstractDeserializer {
 
     public UInt64Deserializer(com.google.protobuf.CodedInputStream input, Descriptors.FieldDescriptor fieldDescriptor,
-                              Object bMessage, boolean isPacked) {
+                              BMessage bMessage, boolean isPacked) {
 
         super(input, fieldDescriptor, bMessage, isPacked);
     }
@@ -44,7 +45,7 @@ public class UInt64Deserializer extends AbstractDeserializer {
 
         BString bFieldName = StringUtils.fromString(fieldDescriptor.getName());
         if (isBMap()) {
-            BMap<BString, Object> bMap = (BMap<BString, Object>) bMessage;
+            BMap<BString, Object> bMap = (BMap<BString, Object>) bMessage.getContent();
             if (fieldDescriptor.isRepeated()) {
                 BArray intArray = ValueCreator.createArrayValue(INT_ARRAY_TYPE);
                 if (bMap.containsKey(bFieldName)) {
@@ -65,7 +66,7 @@ public class UInt64Deserializer extends AbstractDeserializer {
                 bMap.put(bFieldName, readContent());
             }
         } else {
-            bMessage = readContent();
+            bMessage.setContent(readContent());
         }
     }
 

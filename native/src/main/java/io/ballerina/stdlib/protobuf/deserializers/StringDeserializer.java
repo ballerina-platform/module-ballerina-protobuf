@@ -24,6 +24,7 @@ import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
+import io.ballerina.stdlib.protobuf.messages.BMessage;
 
 import java.io.IOException;
 
@@ -34,7 +35,7 @@ import java.io.IOException;
 public class StringDeserializer extends AbstractDeserializer {
 
     public StringDeserializer(com.google.protobuf.CodedInputStream input, Descriptors.FieldDescriptor fieldDescriptor,
-                              Object bMessage) {
+                              BMessage bMessage) {
 
         super(input, fieldDescriptor, bMessage);
     }
@@ -44,7 +45,7 @@ public class StringDeserializer extends AbstractDeserializer {
 
         BString bFieldName = StringUtils.fromString(fieldDescriptor.getName());
         if (isBMap()) {
-            BMap<BString, Object> bMap = (BMap<BString, Object>) bMessage;
+            BMap<BString, Object> bMap = (BMap<BString, Object>) bMessage.getContent();
             if (fieldDescriptor.isRepeated()) {
                 BArray stringArray = ValueCreator.createArrayValue(STRING_ARRAY_TYPE);
                 if (bMap.containsKey(bFieldName)) {
@@ -59,10 +60,10 @@ public class StringDeserializer extends AbstractDeserializer {
                 bMap.put(bFieldName, readContent());
             }
         } else if (isBArray() && GOOGLE_PROTOBUF_STRUCT_FIELDS_ENTRY_KEY.equals(fieldDescriptor.getFullName())) {
-            BArray bArray = (BArray) bMessage;
+            BArray bArray = (BArray) bMessage.getContent();
             bArray.add(0, readContent());
         } else if (!GOOGLE_PROTOBUF_ANY_TYPE_URL.equals(fieldDescriptor.getFullName())) {
-            bMessage = readContent();
+            bMessage.setContent(readContent());
         }
     }
 

@@ -72,35 +72,38 @@ public class AnyTypeCreator {
         String typeUrl = value.getStringValue(StringUtils.fromString(ANY_FIELD_TYPE_URL)).getValue();
 
         if (isMatchingType(typeUrl, expectedTypeTag)) {
-            switch (typeUrl) {
-                case WRAPPER_DOUBLE_TYPE_URL:
-                case WRAPPER_FLOAT_TYPE_URL:
-                    return value.getFloatValue(StringUtils.fromString(ANY_FIELD_VALUE));
-                case WRAPPER_INT64_TYPE_URL:
-                case WRAPPER_UINT64_TYPE_URL:
-                case WRAPPER_INT32_TYPE_URL:
-                case WRAPPER_UINT32_TYPE_URL:
-                    return value.getIntValue(StringUtils.fromString(ANY_FIELD_VALUE));
-                case WRAPPER_BOOL_TYPE_URL:
-                    return value.getBooleanValue(StringUtils.fromString(ANY_FIELD_VALUE));
-                case WRAPPER_STRING_TYPE_URL:
-                    return value.getStringValue(StringUtils.fromString(ANY_FIELD_VALUE));
-                case WRAPPER_BYTES_TYPE_URL:
-                    if (targetType.getDescribingType().toString().equals("byte[]")) {
-                        return value.getArrayValue(StringUtils.fromString(ANY_FIELD_VALUE));
-                    }
-                    break;
-                case EMPTY_TYPE_URL:
-                    return null;
-                case TIMESTAMP_TYPE_URL:
-                    BArray utcTime = value.getArrayValue(StringUtils.fromString(ANY_FIELD_VALUE));
-                    utcTime.freezeDirect();
-                    return utcTime;
-                case DURATION_TYPE_URL:
-                    return value.get(StringUtils.fromString(ANY_FIELD_VALUE));
-                default:
-                    break;
+            try {
+                switch (typeUrl) {
+                    case WRAPPER_DOUBLE_TYPE_URL:
+                    case WRAPPER_FLOAT_TYPE_URL:
+                    case WRAPPER_INT64_TYPE_URL:
+                    case WRAPPER_UINT64_TYPE_URL:
+                    case WRAPPER_INT32_TYPE_URL:
+                    case WRAPPER_UINT32_TYPE_URL:
+                    case WRAPPER_BOOL_TYPE_URL:
+                    case WRAPPER_STRING_TYPE_URL:
+                    case WRAPPER_BYTES_TYPE_URL:
+                        Descriptors.Descriptor descriptor = com.google.protobuf.WrappersProto.getDescriptor()
+                                .findMessageTypeByName(getMessageNameFromTypeUrl(typeUrl));
+                        DeserializeHandler deserializeHandler = new DeserializeHandler(descriptor, null,
+                                value.getStringValue(StringUtils.fromString("value")).getValue());
+                        deserializeHandler.deserialize();
+                        return deserializeHandler.getBMessage();
+                    case EMPTY_TYPE_URL:
+                        return null;
+                    case TIMESTAMP_TYPE_URL:
+                        BArray utcTime = value.getArrayValue(StringUtils.fromString(ANY_FIELD_VALUE));
+                        utcTime.freezeDirect();
+                        return utcTime;
+                    case DURATION_TYPE_URL:
+                        return value.get(StringUtils.fromString(ANY_FIELD_VALUE));
+                    default:
+                        break;
+                }
+            } catch (IOException | Descriptors.DescriptorValidationException e) {
+                return ErrorGenerator.createError(Errors.TypeMismatchError, e.toString());
             }
+
         }
         if (expectedTypeTag == TypeTags.RECORD_TYPE_TAG) {
             if (value.get(StringUtils.fromString("value")) instanceof BString) {
@@ -122,12 +125,18 @@ public class AnyTypeCreator {
         }
     }
 
+    private static String getMessageNameFromTypeUrl(String typeUrl) {
+
+        String[] literals = typeUrl.split("\\.");
+        return literals[literals.length - 1];
+    }
+
     private static Object deserialize(RecordType recordType, String content)
             throws Descriptors.DescriptorValidationException, IOException {
 
         if (isDescriptorAnnotationAvailable(recordType)) {
             String annotation = getProtobufDescAnnotation(recordType);
-            DeserializeHandler m2 = new DeserializeHandler(annotation, content, recordType);
+            DeserializeHandler m2 = new DeserializeHandler(annotation, recordType, content);
             m2.deserialize();
             return m2.getBMessage();
         } else {

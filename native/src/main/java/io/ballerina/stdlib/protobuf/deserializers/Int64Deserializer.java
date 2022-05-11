@@ -25,6 +25,7 @@ import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BDecimal;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
+import io.ballerina.stdlib.protobuf.messages.BMessage;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -36,7 +37,7 @@ import java.math.BigDecimal;
 public class Int64Deserializer extends AbstractDeserializer {
 
     public Int64Deserializer(com.google.protobuf.CodedInputStream input, Descriptors.FieldDescriptor fieldDescriptor,
-                             Object bMessage, boolean isPacked) {
+                             BMessage bMessage, boolean isPacked) {
 
         super(input, fieldDescriptor, bMessage, isPacked);
     }
@@ -46,7 +47,7 @@ public class Int64Deserializer extends AbstractDeserializer {
 
         BString bFieldName = StringUtils.fromString(fieldDescriptor.getName());
         if (isBMap()) {
-            BMap<BString, Object> bMap = (BMap<BString, Object>) bMessage;
+            BMap<BString, Object> bMap = (BMap<BString, Object>) bMessage.getContent();
             if (fieldDescriptor.isRepeated()) {
                 BArray intArray = ValueCreator.createArrayValue(INT_ARRAY_TYPE);
                 if (bMap.containsKey(bFieldName)) {
@@ -68,13 +69,13 @@ public class Int64Deserializer extends AbstractDeserializer {
             }
         } else if (isBArray()
                 && fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_TIMESTAMP_SECONDS)) {
-            BArray bArray = (BArray) bMessage;
+            BArray bArray = (BArray) bMessage.getContent();
             bArray.add(0, readContent());
-        } else if (bMessage instanceof BDecimal
+        } else if (bMessage.getContent() instanceof BDecimal
                 && fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_DURATION_SECONDS)) {
-            bMessage = ValueCreator.createDecimalValue(new BigDecimal(readContent()));
+            bMessage.setContent(new BigDecimal(readContent()));
         } else {
-            bMessage = readContent();
+            bMessage.setContent(readContent());
         }
     }
 

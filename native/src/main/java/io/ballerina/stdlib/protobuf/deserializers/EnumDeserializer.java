@@ -24,6 +24,7 @@ import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
+import io.ballerina.stdlib.protobuf.messages.BMessage;
 
 import java.io.IOException;
 
@@ -34,7 +35,7 @@ import java.io.IOException;
 public class EnumDeserializer extends AbstractDeserializer {
 
     public EnumDeserializer(com.google.protobuf.CodedInputStream input, Descriptors.FieldDescriptor fieldDescriptor,
-                            Object bMessage) {
+                            BMessage bMessage) {
 
         super(input, fieldDescriptor, bMessage);
     }
@@ -44,7 +45,7 @@ public class EnumDeserializer extends AbstractDeserializer {
 
         BString bFieldName = StringUtils.fromString(fieldDescriptor.getName());
         if (isBMap()) {
-            BMap<BString, Object> bMap = (BMap<BString, Object>) bMessage;
+            BMap<BString, Object> bMap = (BMap<BString, Object>) bMessage.getContent();
             if (fieldDescriptor.isRepeated()) {
                 BArray stringArray = ValueCreator.createArrayValue(STRING_ARRAY_TYPE);
                 if (bMap.containsKey(bFieldName)) {
@@ -53,14 +54,13 @@ public class EnumDeserializer extends AbstractDeserializer {
                     bMap.put(bFieldName, stringArray);
                 }
                 stringArray.add(stringArray.size(), readContent());
-                bMap.put(bFieldName, stringArray);
             } else if (fieldDescriptor.getContainingOneof() != null) {
                 bMap.put(StringUtils.fromString(fieldDescriptor.getName()), readContent());
             } else {
                 bMap.put(bFieldName, readContent());
             }
         } else {
-            bMessage = readContent();
+            bMessage.setContent(readContent());
         }
     }
 

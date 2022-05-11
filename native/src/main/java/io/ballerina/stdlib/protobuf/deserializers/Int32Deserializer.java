@@ -25,6 +25,7 @@ import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BDecimal;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
+import io.ballerina.stdlib.protobuf.messages.BMessage;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -37,7 +38,7 @@ import java.math.MathContext;
 public class Int32Deserializer extends AbstractDeserializer {
 
     public Int32Deserializer(com.google.protobuf.CodedInputStream input, Descriptors.FieldDescriptor fieldDescriptor,
-                             Object bMessage, boolean isPacked) {
+                             BMessage bMessage, boolean isPacked) {
 
         super(input, fieldDescriptor, bMessage, isPacked);
     }
@@ -47,7 +48,7 @@ public class Int32Deserializer extends AbstractDeserializer {
 
         BString bFieldName = StringUtils.fromString(fieldDescriptor.getName());
         if (isBMap()) {
-            BMap<BString, Object> bMap = (BMap<BString, Object>) bMessage;
+            BMap<BString, Object> bMap = (BMap<BString, Object>) bMessage.getContent();
             if (fieldDescriptor.isRepeated()) {
                 BArray int32Array = ValueCreator.createArrayValue(INT32_ARRAY_TYPE);
                 if (bMap.containsKey(bFieldName)) {
@@ -68,7 +69,7 @@ public class Int32Deserializer extends AbstractDeserializer {
                 bMap.put(bFieldName, readContent());
             }
         } else if (isBArray() && fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_TIMESTAMP_NANOS)) {
-            BArray bArray = (BArray) bMessage;
+            BArray bArray = (BArray) bMessage.getContent();
             BigDecimal nanos = new BigDecimal(readContent())
                     .divide(ANALOG_GIGA, MathContext.DECIMAL128);
             bArray.add(1, ValueCreator.createDecimalValue(nanos));
@@ -76,10 +77,10 @@ public class Int32Deserializer extends AbstractDeserializer {
                 && fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_DURATION_NANOS)) {
             BigDecimal nanos = new BigDecimal(readContent())
                     .divide(ANALOG_GIGA, MathContext.DECIMAL128);
-            BigDecimal secondsValue = ((BDecimal) bMessage).value();
-            bMessage = ValueCreator.createDecimalValue(secondsValue.add(nanos));
+            BigDecimal secondsValue = ((BDecimal) bMessage.getContent()).value();
+            bMessage.setContent(ValueCreator.createDecimalValue(secondsValue.add(nanos)));
         } else {
-            bMessage = readContent();
+            bMessage.setContent(readContent());
         }
     }
 

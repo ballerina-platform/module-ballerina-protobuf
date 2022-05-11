@@ -25,6 +25,7 @@ import io.ballerina.runtime.api.types.ArrayType;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
+import io.ballerina.stdlib.protobuf.messages.BMessage;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -36,7 +37,7 @@ public abstract class AbstractDeserializer {
 
     com.google.protobuf.CodedInputStream input;
     Descriptors.FieldDescriptor fieldDescriptor;
-    Object bMessage;
+    BMessage bMessage;
     Type type;
     boolean isPacked = false;
 
@@ -63,7 +64,7 @@ public abstract class AbstractDeserializer {
     protected static final ArrayType FLOAT_ARRAY_TYPE = TypeCreator.createArrayType(PredefinedTypes.TYPE_FLOAT);
 
     public AbstractDeserializer(com.google.protobuf.CodedInputStream input, Descriptors.FieldDescriptor fieldDescriptor,
-                                Object bMessage) {
+                                BMessage bMessage) {
 
         this.bMessage = bMessage;
         this.fieldDescriptor = fieldDescriptor;
@@ -71,7 +72,7 @@ public abstract class AbstractDeserializer {
     }
 
     public AbstractDeserializer(com.google.protobuf.CodedInputStream input, Descriptors.FieldDescriptor fieldDescriptor,
-                                Object bMessage, boolean isPacked) {
+                                BMessage bMessage, boolean isPacked) {
 
         this.bMessage = bMessage;
         this.fieldDescriptor = fieldDescriptor;
@@ -80,7 +81,7 @@ public abstract class AbstractDeserializer {
     }
 
     public AbstractDeserializer(com.google.protobuf.CodedInputStream input, Descriptors.FieldDescriptor fieldDescriptor,
-                                Type type, Object bMessage) {
+                                Type type, BMessage bMessage) {
 
         this.bMessage = bMessage;
         this.fieldDescriptor = fieldDescriptor;
@@ -90,12 +91,12 @@ public abstract class AbstractDeserializer {
 
     public boolean isBMap() {
 
-        return bMessage instanceof BMap;
+        return bMessage.getContent() instanceof BMap;
     }
 
     public boolean isBArray() {
 
-        return bMessage instanceof BArray;
+        return bMessage.getContent() instanceof BArray;
     }
 
     public abstract void deserialize() throws IOException, Descriptors.DescriptorValidationException;
