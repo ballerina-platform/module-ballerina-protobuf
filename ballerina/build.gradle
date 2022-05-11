@@ -63,9 +63,29 @@ ballerina {
     testCoverageParam = "--code-coverage --coverage-format=xml --test-report --includes=*"
 }
 
+configurations {
+    externalJars
+}
+
+dependencies {
+    externalJars(group: 'com.google.protobuf', name: 'protobuf-java', version: "${protobufJavaVersion}") {
+        transitive = false
+    }
+}
+
+task copyExternalJars {
+    doLast {
+        copy {
+            into "$project.projectDir/lib"
+            from project.configurations.externalJars
+        }
+    }
+}
+
 task updateTomlFiles {
     doLast {
         def newConfig = ballerinaTomlFilePlaceHolder.text.replace("@project.version@", project.version)
+        newConfig = ballerinaTomlFilePlaceHolder.text.replace("@protobuf.java.version@", project.protobufJavaVersion)
         newConfig = newConfig.replace("@toml.version@", tomlVersion)
         ballerinaTomlFile.text = newConfig
     }

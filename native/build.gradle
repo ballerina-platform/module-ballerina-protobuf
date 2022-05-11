@@ -25,6 +25,7 @@ description = 'Ballerina - Protobuf Java Utils'
 dependencies {
     implementation group: 'org.ballerinalang', name: 'ballerina-runtime', version: "${ballerinaLangVersion}"
     implementation group: 'org.ballerinalang', name: 'value', version: "${ballerinaLangVersion}"
+    implementation group: 'com.google.protobuf', name: 'protobuf-java', version: "${protobufJavaVersion}"
 
     checkstyle project(":checkstyle")
     checkstyle "com.puppycrawl.tools:checkstyle:${puppycrawlCheckstyleVersion}"
