@@ -19,6 +19,7 @@ import ballerina/time;
 import ballerina/jballerina.java;
 
 type BytesType byte[];
+
 type NilType ();
 
 public type Person record {|
@@ -213,6 +214,47 @@ isolated function testAnyRecords() {
     test:assertEquals(anyContext.content, anyRecord);
     test:assertEquals(anyContext.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
     test:assertEquals(contextAnyStream.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
+}
+
+@test:Config {}
+isolated function testPack() returns error? {
+    Any a = {"typeUrl": "type.googleapis.com/AnnotatedMessage", "value": "0900000000000025401500003841180A200B280C310D000000000000003D0E00000040014A0457534F32620B0A0942616C6C6572696E61"};
+    AnnotatedMessage msg = check unpack(a, AnnotatedMessage);
+    AnnotatedMessage expected = {
+        doubleData: 10.5,
+        floatData: 11.5,
+        int64Data: 10,
+        uInt64Data: 11,
+        int32Data: 12,
+        fixed64Data: 13,
+        fixed32Data: 14,
+        booleanData: true,
+        stringData: "WSO2",
+        enumData: enumData0,
+        messageData: {"messageData1": "Ballerina"}
+    };
+    test:assertEquals(msg, expected);
+}
+
+@test:Config {}
+isolated function testPack1() returns error? {
+
+    Any a = {typeUrl: "type.googleapis.com/AnnotatedMessageWithRepeats", value: "0A10000000000000254033333333333325401204000038411A010A22010B2A010C32080D000000000000003A040E0000004201014A0457534F32620B0A0942616C6C6572696E61"};
+    AnnotatedMessageWithRepeats msg = check unpack(a, AnnotatedMessageWithRepeats);
+    AnnotatedMessageWithRepeats expected = {
+        doubleData: [10.5, 10.6],
+        floatData: [11.5],
+        int64Data: [10],
+        uInt64Data: [11],
+        int32Data: [12],
+        fixed64Data: [13],
+        fixed32Data: [14],
+        booleanData: [true],
+        stringData: ["WSO2"],
+        enumData: [],
+        messageData: [{messageData1: "Ballerina"}]
+    };
+    test:assertEquals(msg, expected);
 }
 
 @test:Config {}
