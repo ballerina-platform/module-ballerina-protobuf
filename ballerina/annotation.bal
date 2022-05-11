@@ -14,8 +14,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
+# The record definition for the Descriptor annotation
+#
+# + value - The descriptor value as a hexadecimal string
 public type MessageDescriptor record {|
-    byte[] value;
+    string value;
 |};
 
+# Annotation definition of the Descriptor
 public annotation MessageDescriptor Descriptor on type;
