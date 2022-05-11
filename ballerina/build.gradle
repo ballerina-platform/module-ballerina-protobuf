@@ -85,7 +85,7 @@ task copyExternalJars {
 task updateTomlFiles {
     doLast {
         def newConfig = ballerinaTomlFilePlaceHolder.text.replace("@project.version@", project.version)
-        newConfig = ballerinaTomlFilePlaceHolder.text.replace("@protobuf.java.version@", project.protobufJavaVersion)
+        newConfig = newConfig.replace("@protobuf.java.version@", project.protobufJavaVersion)
         newConfig = newConfig.replace("@toml.version@", tomlVersion)
         ballerinaTomlFile.text = newConfig
     }
