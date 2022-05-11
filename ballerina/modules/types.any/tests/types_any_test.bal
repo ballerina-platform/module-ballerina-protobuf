@@ -28,82 +28,6 @@ public type Person record {|
 |};
 
 @test:Config {}
-isolated function testPackAndUnpackForFloat() returns Error? {
-
-    float floatValue = 234f;
-    Any anyFloat = pack(floatValue);
-    float unpackedFloat = check unpack(anyFloat, float);
-    test:assertEquals(unpackedFloat, floatValue);
-}
-
-@test:Config {}
-isolated function testPackAndUnpackForDouble() returns Error? {
-
-    float doubleValue = 234f;
-    Any anyDouble = {typeUrl: "type.googleapis.com/google.protobuf.DoubleValue", value: doubleValue};
-    float unpackedDouble = check unpack(anyDouble, float);
-    test:assertEquals(unpackedDouble, doubleValue);
-}
-
-@test:Config {}
-isolated function testPackAndUnpackForInt64() returns Error? {
-
-    int int64Value = 234;
-    Any anyInt64 = pack(int64Value);
-    int unpackedInt64 = check unpack(anyInt64, int);
-    test:assertEquals(unpackedInt64, int64Value);
-}
-
-@test:Config {}
-isolated function testPackAndUnpackForUint64() returns Error? {
-
-    int uint64Value = 234;
-    Any anyUint64 = {typeUrl: "type.googleapis.com/google.protobuf.UInt64Value", value: uint64Value};
-    int unpackedUint64 = check unpack(anyUint64, int);
-    test:assertEquals(unpackedUint64, uint64Value);
-}
-
-@test:Config {}
-isolated function testPackAndUnpackForInt32() returns Error? {
-
-    int int32Value = 234;
-    Any anyInt32 = {typeUrl: "type.googleapis.com/google.protobuf.Int32Value", value: int32Value};
-    int unpackedInt32 = check unpack(anyInt32, int);
-    test:assertEquals(unpackedInt32, int32Value);
-}
-
-@test:Config {}
-isolated function testPackAndUnpackForUint32() returns Error? {
-
-    int uint32Value = 234;
-    Any anyUint32 = {typeUrl: "type.googleapis.com/google.protobuf.UInt32Value", value: uint32Value};
-    int unpackedUint32 = check unpack(anyUint32, int);
-    test:assertEquals(unpackedUint32, uint32Value);
-}
-
-@test:Config {}
-isolated function testPackAndUnpackForString() returns Error? {
-
-    string stringValue = "string value";
-    Any anyString = pack(stringValue);
-    string unpackedString = check unpack(anyString, string);
-    test:assertEquals(unpackedString, stringValue);
-}
-
-@test:Config {}
-isolated function testPackAndUnpackForBytes() returns Error? {
-
-    string stringValue = "string value";
-    byte[] bytes = stringValue.toBytes();
-    Any anyBytes = pack(bytes);
-    Any expectedBytes = {typeUrl: "type.googleapis.com/google.protobuf.BytesValue", value: bytes};
-    test:assertEquals(anyBytes, expectedBytes);
-
-    BytesType unpackedBytes = check unpack(anyBytes, BytesType);
-    test:assertEquals(unpackedBytes, bytes);
-}
-
-@test:Config {}
 isolated function testPackAndUnpackForNil() returns Error? {
 
     Any anyNil1 = pack(());
@@ -116,65 +40,6 @@ isolated function testPackAndUnpackForNil() returns Error? {
     Any anyNil2 = {typeUrl: "type.googleapis.com/google.protobuf.Empty", value: {}};
     NilType unpackedNil2 = check unpack(anyNil2, NilType);
     test:assertEquals(unpackedNil2, ());
-}
-
-@test:Config {}
-isolated function testPackAndUnpackForBoolean() returns Error? {
-
-    boolean booleanValue = true;
-    Any anyBoolean = pack(booleanValue);
-    boolean unpackedBoolean = check unpack(anyBoolean, boolean);
-    test:assertEquals(unpackedBoolean, booleanValue);
-}
-
-@test:Config {}
-isolated function testPackAndUnpackForTimestamp() returns Error? {
-
-    time:Utc timestampValue = time:utcNow();
-    Any anyTimestamp = pack(timestampValue);
-    time:Utc unpackedTimestamp = check unpack(anyTimestamp, time:Utc);
-    test:assertEquals(unpackedTimestamp, timestampValue);
-}
-
-@test:Config {}
-isolated function testPackAndUnpackForDuration() returns Error? {
-
-    time:Seconds durationValue = 1002d;
-    Any anyDuration = pack(durationValue);
-    time:Seconds unpackedDuration = check unpack(anyDuration, time:Seconds);
-    test:assertEquals(unpackedDuration, durationValue);
-}
-
-@test:Config {}
-isolated function testPackAndUnpackForRecord() returns Error? {
-
-    Person person = {name: "John", code: 23};
-    Any anyRecord = pack(person);
-    Person unpackedPerson = check unpack(anyRecord, Person);
-    test:assertEquals(unpackedPerson, person);
-}
-
-@test:Config {}
-isolated function testPackAndUnpackForGenericValue() returns Error? {
-
-    ValueType genericValue = 234f;
-    Any anyFloatGeneric = pack(genericValue);
-    float unpackedFloatGeneric = check unpack(anyFloatGeneric, float);
-    test:assertEquals(unpackedFloatGeneric, genericValue);
-}
-
-@test:Config {}
-isolated function testUnpackError() {
-
-    float floatValue = 234f;
-    Any anyFloat = pack(floatValue);
-    int|Error err = unpack(anyFloat, int);
-    if err is Error {
-        string expectedErr = "Type type.googleapis.com/google.protobuf.FloatValue cannot unpack to int";
-        test:assertEquals(err.message(), expectedErr);
-    } else {
-        test:assertFail("Expected 'any:Error not found");
-    }
 }
 
 @test:Config {}
@@ -198,26 +63,7 @@ isolated function testGetNameFromRecord() {
 }
 
 @test:Config {}
-isolated function testAnyRecords() {
-    Any[] anyTypeArr = [
-        pack(<Person>{name: "John", code: 23}),
-        pack("Hello"),
-        pack(10)
-    ];
-    Person person = {name: "John", code: 23};
-    Any anyRecord = pack(person);
-    ContextAny anyContext = {content: anyRecord, headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
-    ContextAnyStream contextAnyStream = {content: anyTypeArr.toStream(), headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
-
-    test:assertEquals(anyRecord.typeUrl, "type.googleapis.com/Person");
-    test:assertEquals(anyRecord.value, person);
-    test:assertEquals(anyContext.content, anyRecord);
-    test:assertEquals(anyContext.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
-    test:assertEquals(contextAnyStream.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
-}
-
-@test:Config {}
-isolated function testPack() returns error? {
+isolated function testUnpackWithAnnotatedMessage() returns error? {
     Any a = {"typeUrl": "type.googleapis.com/AnnotatedMessage", "value": "0900000000000025401500003841180A200B280C310D000000000000003D0E00000040014A0457534F32620B0A0942616C6C6572696E61"};
     AnnotatedMessage msg = check unpack(a, AnnotatedMessage);
     AnnotatedMessage expected = {
@@ -237,8 +83,7 @@ isolated function testPack() returns error? {
 }
 
 @test:Config {}
-isolated function testPack1() returns error? {
-
+isolated function testUnpackWithAnnotatedRepeatMessage() returns error? {
     Any a = {typeUrl: "type.googleapis.com/AnnotatedMessageWithRepeats", value: "0A10000000000000254033333333333325401204000038411A010A22010B2A010C32080D000000000000003A040E0000004201014A0457534F32620B0A0942616C6C6572696E61"};
     AnnotatedMessageWithRepeats msg = check unpack(a, AnnotatedMessageWithRepeats);
     AnnotatedMessageWithRepeats expected = {
@@ -255,6 +100,77 @@ isolated function testPack1() returns error? {
         messageData: [{messageData1: "Ballerina"}]
     };
     test:assertEquals(msg, expected);
+}
+
+@test:Config {}
+isolated function testUnpackDouble() returns Error? {
+
+    Any a = {typeUrl: "type.googleapis.com/google.protobuf.DoubleValue", value: "090000000000002540"};
+    float msg = check unpack(a, float);
+    float expected = 10.5f;
+    test:assertEquals(msg, expected);
+}
+
+@test:Config {}
+isolated function testUnpackFloat() returns Error? {
+
+    Any a = {typeUrl: "type.googleapis.com/google.protobuf.FloatValue", value: "0D00002841"};
+    float msg = check unpack(a, float);
+    float expected = 10.5f;
+    test:assertEquals(msg, expected);
+}
+
+@test:Config {}
+isolated function testUnpackInt64() returns Error? {
+
+    Any a = {typeUrl: "type.googleapis.com/google.protobuf.Int64Value", value: "080A"};
+    int msg = check unpack(a, int);
+    int expected = 10;
+    test:assertEquals(msg, expected);
+}
+
+@test:Config {}
+isolated function testUnpackUInt64() returns Error? {
+
+    Any a = {typeUrl: "type.googleapis.com/google.protobuf.UInt64Value", value: "080B"};
+    int msg = check unpack(a, int);
+    int expected = 11;
+    test:assertEquals(msg, expected);
+}
+
+@test:Config {}
+isolated function testUnpackInt32() returns Error? {
+
+    Any a = {typeUrl: "type.googleapis.com/google.protobuf.Int32Value", value: "080B"};
+    int msg = check unpack(a, int);
+    int expected = 11;
+    test:assertEquals(msg, expected);
+}
+
+@test:Config {}
+isolated function testUnpackUInt32() returns Error? {
+
+    Any a = {typeUrl: "type.googleapis.com/google.protobuf.UInt32Value", value: "080B"};
+    int msg = check unpack(a, int);
+    int expected = 11;
+    test:assertEquals(msg, expected);
+}
+
+@test:Config {}
+isolated function testUnpackBoolean() returns Error? {
+
+    Any a = {typeUrl: "type.googleapis.com/google.protobuf.BoolValue", value: "0801"};
+    boolean msg = check unpack(a, boolean);
+    boolean expected = true;
+    test:assertEquals(msg, expected);
+}
+
+@test:Config {}
+isolated function testUnpackStringValue() returns error? {
+
+    Any a = {typeUrl: "type.googleapis.com/google.protobuf.StringValue", value: "0A0457534F32"};
+    string msg = check unpack(a, string);
+    test:assertEquals(msg, "WSO2");
 }
 
 @test:Config {}
