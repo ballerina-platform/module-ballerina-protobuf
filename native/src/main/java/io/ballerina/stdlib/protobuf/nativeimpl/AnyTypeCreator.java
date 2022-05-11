@@ -18,28 +18,34 @@
 
 package io.ballerina.stdlib.protobuf.nativeimpl;
 
+import com.google.protobuf.Descriptors;
 import io.ballerina.runtime.api.TypeTags;
+import io.ballerina.runtime.api.types.RecordType;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.runtime.api.values.BTypedesc;
+import io.ballerina.stdlib.protobuf.deserializers.DeserializeHandler;
 import org.ballerinalang.langlib.value.CloneWithType;
+
+import java.io.IOException;
+import java.util.Arrays;
 
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_FIELD_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_FIELD_VALUE;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.DURATION_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.EMPTY_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.TIMESTAMP_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_BOOL_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_BYTES_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_DOUBLE_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_FLOAT_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_INT32_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_INT64_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_STRING_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_UINT32_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_UINT64_TYPE_NAME;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.DURATION_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.EMPTY_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.TIMESTAMP_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_BOOL_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_BYTES_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_DOUBLE_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_FLOAT_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_INT32_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_INT64_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_STRING_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_UINT32_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_UINT64_TYPE_URL;
 
 /**
  * This class will hold the native APIs for Ballerina pack and unpack APIs.
@@ -47,6 +53,9 @@ import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_
  * @since 1.0.1
  */
 public class AnyTypeCreator {
+
+    private static final String PROTOBUF_DESC_ANNOTATION = "ballerina/protobuf:1:Descriptor";
+    private static final String PROTOBUF_DESC_ANNOTATION_VALUE = "value";
 
     private AnyTypeCreator() {
 
@@ -64,38 +73,48 @@ public class AnyTypeCreator {
 
         if (isMatchingType(typeUrl, expectedTypeTag)) {
             switch (typeUrl) {
-                case WRAPPER_DOUBLE_TYPE_NAME:
-                case WRAPPER_FLOAT_TYPE_NAME:
+                case WRAPPER_DOUBLE_TYPE_URL:
+                case WRAPPER_FLOAT_TYPE_URL:
                     return value.getFloatValue(StringUtils.fromString(ANY_FIELD_VALUE));
-                case WRAPPER_INT64_TYPE_NAME:
-                case WRAPPER_UINT64_TYPE_NAME:
-                case WRAPPER_INT32_TYPE_NAME:
-                case WRAPPER_UINT32_TYPE_NAME:
+                case WRAPPER_INT64_TYPE_URL:
+                case WRAPPER_UINT64_TYPE_URL:
+                case WRAPPER_INT32_TYPE_URL:
+                case WRAPPER_UINT32_TYPE_URL:
                     return value.getIntValue(StringUtils.fromString(ANY_FIELD_VALUE));
-                case WRAPPER_BOOL_TYPE_NAME:
+                case WRAPPER_BOOL_TYPE_URL:
                     return value.getBooleanValue(StringUtils.fromString(ANY_FIELD_VALUE));
-                case WRAPPER_STRING_TYPE_NAME:
+                case WRAPPER_STRING_TYPE_URL:
                     return value.getStringValue(StringUtils.fromString(ANY_FIELD_VALUE));
-                case WRAPPER_BYTES_TYPE_NAME:
+                case WRAPPER_BYTES_TYPE_URL:
                     if (targetType.getDescribingType().toString().equals("byte[]")) {
                         return value.getArrayValue(StringUtils.fromString(ANY_FIELD_VALUE));
                     }
                     break;
-                case EMPTY_TYPE_NAME:
+                case EMPTY_TYPE_URL:
                     return null;
-                case TIMESTAMP_TYPE_NAME:
+                case TIMESTAMP_TYPE_URL:
                     BArray utcTime = value.getArrayValue(StringUtils.fromString(ANY_FIELD_VALUE));
                     utcTime.freezeDirect();
                     return utcTime;
-                case DURATION_TYPE_NAME:
+                case DURATION_TYPE_URL:
                     return value.get(StringUtils.fromString(ANY_FIELD_VALUE));
                 default:
                     break;
             }
         }
         if (expectedTypeTag == TypeTags.RECORD_TYPE_TAG) {
-            return CloneWithType.cloneWithType(value.getMapValue(StringUtils.fromString(ANY_FIELD_VALUE)),
-                    targetType);
+            if (value.get(StringUtils.fromString("value")) instanceof BString) {
+                try {
+                    Object data = deserialize((RecordType) targetType.getDescribingType(),
+                            value.getStringValue(StringUtils.fromString("value")).getValue());
+                    return CloneWithType.cloneWithType(data, targetType);
+                } catch (Descriptors.DescriptorValidationException | IOException e) {
+                    return ErrorGenerator.createError(Errors.TypeMismatchError, e.toString());
+                }
+            } else {
+                return CloneWithType.cloneWithType(value.getMapValue(StringUtils.fromString(ANY_FIELD_VALUE)),
+                        targetType);
+            }
         } else {
             String errorMessage = "Type " + typeUrl + " cannot unpack to " +
                     targetType.getDescribingType().getName();
@@ -103,7 +122,35 @@ public class AnyTypeCreator {
         }
     }
 
+    private static Object deserialize(RecordType recordType, String content)
+            throws Descriptors.DescriptorValidationException, IOException {
+
+        if (isDescriptorAnnotationAvailable(recordType)) {
+            String annotation = getProtobufDescAnnotation(recordType);
+            DeserializeHandler m2 = new DeserializeHandler(annotation, content, recordType);
+            m2.deserialize();
+            return m2.getBMessage();
+        } else {
+            return ErrorGenerator.createError(Errors.TypeMismatchError,
+                    "Unavailable annotation for record " + recordType.getName());
+        }
+    }
+
+    private static boolean isDescriptorAnnotationAvailable(RecordType recordType) {
+
+        return Arrays.stream(recordType.getAnnotations().getKeys()).anyMatch(
+                s -> PROTOBUF_DESC_ANNOTATION.equals(s.getValue()));
+    }
+
+    private static String getProtobufDescAnnotation(RecordType recordType) {
+
+        BMap<BString, Object> annotations = recordType.getAnnotations();
+        return annotations.getMapValue(StringUtils.fromString(PROTOBUF_DESC_ANNOTATION))
+                .getStringValue(StringUtils.fromString(PROTOBUF_DESC_ANNOTATION_VALUE)).getValue();
+    }
+
     private static boolean isMatchingType(String typeUrl, int typeTag) {
+
         if (ModuleUtils.getAnyTypeMap().containsKey(typeUrl)) {
             return ModuleUtils.getAnyTypeMap().get(typeUrl) == typeTag;
         }

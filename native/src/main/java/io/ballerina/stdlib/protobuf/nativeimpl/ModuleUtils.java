@@ -25,18 +25,18 @@ import io.ballerina.runtime.api.TypeTags;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.DURATION_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.EMPTY_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.TIMESTAMP_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_BOOL_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_BYTES_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_DOUBLE_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_FLOAT_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_INT32_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_INT64_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_STRING_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_UINT32_TYPE_NAME;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_UINT64_TYPE_NAME;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.DURATION_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.EMPTY_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.TIMESTAMP_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_BOOL_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_BYTES_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_DOUBLE_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_FLOAT_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_INT32_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_INT64_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_STRING_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_UINT32_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_UINT64_TYPE_URL;
 
 /**
  * APIs to set and get module-level details.
@@ -58,21 +58,18 @@ public class ModuleUtils {
     public static void setProtoTypesAnyModule(Environment env) {
 
         protoTypesAnyModule = env.getCurrentModule();
-
-        anyTypesMap.put(WRAPPER_DOUBLE_TYPE_NAME, TypeTags.FLOAT_TAG);
-        anyTypesMap.put(WRAPPER_FLOAT_TYPE_NAME, TypeTags.FLOAT_TAG);
-
-        anyTypesMap.put(WRAPPER_INT64_TYPE_NAME, TypeTags.INT_TAG);
-        anyTypesMap.put(WRAPPER_UINT64_TYPE_NAME, TypeTags.INT_TAG);
-        anyTypesMap.put(WRAPPER_INT32_TYPE_NAME, TypeTags.INT_TAG);
-        anyTypesMap.put(WRAPPER_UINT32_TYPE_NAME, TypeTags.INT_TAG);
-
-        anyTypesMap.put(WRAPPER_BOOL_TYPE_NAME, TypeTags.BOOLEAN_TAG);
-        anyTypesMap.put(WRAPPER_STRING_TYPE_NAME, TypeTags.STRING_TAG);
-        anyTypesMap.put(WRAPPER_BYTES_TYPE_NAME, TypeTags.ARRAY_TAG);
-        anyTypesMap.put(EMPTY_TYPE_NAME, TypeTags.NULL_TAG);
-        anyTypesMap.put(TIMESTAMP_TYPE_NAME, TypeTags.INTERSECTION_TAG);
-        anyTypesMap.put(DURATION_TYPE_NAME, TypeTags.DECIMAL_TAG);
+        anyTypesMap.put(WRAPPER_DOUBLE_TYPE_URL, TypeTags.FLOAT_TAG);
+        anyTypesMap.put(WRAPPER_FLOAT_TYPE_URL, TypeTags.FLOAT_TAG);
+        anyTypesMap.put(WRAPPER_INT64_TYPE_URL, TypeTags.INT_TAG);
+        anyTypesMap.put(WRAPPER_UINT64_TYPE_URL, TypeTags.INT_TAG);
+        anyTypesMap.put(WRAPPER_INT32_TYPE_URL, TypeTags.INT_TAG);
+        anyTypesMap.put(WRAPPER_UINT32_TYPE_URL, TypeTags.INT_TAG);
+        anyTypesMap.put(WRAPPER_BOOL_TYPE_URL, TypeTags.BOOLEAN_TAG);
+        anyTypesMap.put(WRAPPER_STRING_TYPE_URL, TypeTags.STRING_TAG);
+        anyTypesMap.put(WRAPPER_BYTES_TYPE_URL, TypeTags.ARRAY_TAG);
+        anyTypesMap.put(EMPTY_TYPE_URL, TypeTags.NULL_TAG);
+        anyTypesMap.put(TIMESTAMP_TYPE_URL, TypeTags.INTERSECTION_TAG);
+        anyTypesMap.put(DURATION_TYPE_URL, TypeTags.DECIMAL_TAG);
     }
 
     public static Module getProtoTypesAnyModule() {
