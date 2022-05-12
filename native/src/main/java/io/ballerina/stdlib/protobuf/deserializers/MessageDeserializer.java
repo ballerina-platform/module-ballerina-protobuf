@@ -44,20 +44,20 @@ import java.util.Arrays;
 public class MessageDeserializer extends AbstractDeserializer {
 
     public MessageDeserializer(com.google.protobuf.CodedInputStream input, Descriptors.FieldDescriptor fieldDescriptor,
-                               Type type, BMessage bMessage) {
+                               Type type, BMessage bMessage, Type targetType) {
 
-        super(input, fieldDescriptor, type, bMessage);
+        super(input, fieldDescriptor, bMessage, targetType, type);
     }
 
     @Override
     public void deserialize() throws IOException, Descriptors.DescriptorValidationException {
 
         RecordType recordType;
-        if (type instanceof RecordType) {
-            recordType = (RecordType) type;
-        } else if (type instanceof MapType || type instanceof TupleType ||
-                type instanceof AnydataType ||
-                type.getTag() == TypeCreator.createArrayType(PredefinedTypes.TYPE_ANYDATA).getTag()) {
+        if (messageType instanceof RecordType) {
+            recordType = (RecordType) messageType;
+        } else if (messageType instanceof MapType || messageType instanceof TupleType ||
+                messageType instanceof AnydataType ||
+                messageType.getTag() == TypeCreator.createArrayType(PredefinedTypes.TYPE_ANYDATA).getTag()) {
             recordType = null;
         } else {
             throw new IOException("Error while decoding request " +
@@ -69,9 +69,9 @@ public class MessageDeserializer extends AbstractDeserializer {
             BMap<BString, Object> bMap = (BMap<BString, Object>) bMessage.getContent();
             if (fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_STRUCT_FIELDS) ||
                     fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_STRUCTVALUE_VALUES)) {
-                DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor,
+                DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor, input, targetType,
                         TypeCreator.createTupleType(Arrays.asList(PredefinedTypes.TYPE_STRING,
-                                PredefinedTypes.TYPE_ANYDATA)), input);
+                                PredefinedTypes.TYPE_ANYDATA)));
                 deserializeHandler.deserialize();
                 BArray tupleval = (BArray) (deserializeHandler.getBMessage());
                 bMap.put(tupleval.getBString(0), tupleval.get(1));
@@ -83,53 +83,57 @@ public class MessageDeserializer extends AbstractDeserializer {
                     valueArray = ValueCreator.createArrayValue((ArrayType) fieldType);
                     bMap.put(bFieldName, valueArray);
                 }
-                DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor,
-                        ((ArrayType) fieldType).getElementType(), input);
+                DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor, input, targetType,
+                        ((ArrayType) fieldType).getElementType());
                 deserializeHandler.deserialize();
                 valueArray.add(valueArray.size(), deserializeHandler.getBMessage());
             } else if (fieldDescriptor.getContainingOneof() != null && recordType != null) {
                 Type fieldType = recordType.getFields().get(bFieldName.getValue()).getFieldType();
-                DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor, fieldType, input);
+                DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor, input, targetType,
+                        fieldType);
                 deserializeHandler.deserialize();
                 Object bValue = deserializeHandler.getBMessage();
                 bMap.put(StringUtils.fromString(fieldDescriptor.getName()), bValue);
             } else if (fieldDescriptor.getMessageType().getFullName().equals(GOOGLE_PROTOBUF_STRUCT) &&
                     recordType != null) {
                 Type fieldType = TypeCreator.createMapType(PredefinedTypes.TYPE_ANYDATA);
-                DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor, fieldType, input);
+                DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor, input, targetType,
+                        fieldType);
                 deserializeHandler.deserialize();
                 bMap.put(bFieldName, deserializeHandler.getBMessage());
             } else if (recordType != null) {
                 Type fieldType = recordType.getFields().get(bFieldName.getValue()).getFieldType();
-                DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor, fieldType, input);
+                DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor, input, targetType,
+                        fieldType);
                 deserializeHandler.deserialize();
                 bMap.put(bFieldName, deserializeHandler.getBMessage());
             }
         } else if (fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_STRUCT_FIELDSENTRY_VALUE)) {
             BArray bArray = (BArray) bMessage.getContent();
-            DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor,
-                    PredefinedTypes.TYPE_ANYDATA, input);
+            DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor, input, targetType,
+                    PredefinedTypes.TYPE_ANYDATA);
             deserializeHandler.deserialize();
             bArray.add(1, deserializeHandler.getBMessage());
         } else if (fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_VALUE_LIST_VALUE)) {
-            DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor,
-                    TypeCreator.createArrayType(PredefinedTypes.TYPE_ANYDATA), input);
+            DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor, input, targetType,
+                    TypeCreator.createArrayType(PredefinedTypes.TYPE_ANYDATA));
             deserializeHandler.deserialize();
             bMessage.setContent(deserializeHandler.getBMessage());
         } else if (fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_LISTVALUE_VALUES)) {
             BArray bArray = (BArray) bMessage.getContent();
-            DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor,
-                    PredefinedTypes.TYPE_ANYDATA, input);
+            DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor, input, targetType,
+                    PredefinedTypes.TYPE_ANYDATA);
             deserializeHandler.deserialize();
             bArray.add(bArray.size(), deserializeHandler.getBMessage());
         } else if (fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_VALUE_STRUCT_VALUE)) {
-            DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor,
-                    TypeCreator.createMapType(PredefinedTypes.TYPE_ANYDATA), input);
+            DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor, input, targetType,
+                    TypeCreator.createMapType(PredefinedTypes.TYPE_ANYDATA));
             deserializeHandler.deserialize();
             bMessage.setContent(deserializeHandler.getBMessage());
         } else if (recordType != null) {
             Type fieldType = recordType.getFields().get(bFieldName.getValue()).getFieldType();
-            DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor, fieldType, input);
+            DeserializeHandler deserializeHandler = new DeserializeHandler(fieldDescriptor, input, targetType,
+                    fieldType);
             deserializeHandler.deserialize();
             bMessage.setContent(deserializeHandler.getBMessage());
         }

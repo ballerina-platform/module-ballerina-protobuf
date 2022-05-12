@@ -20,6 +20,7 @@ package io.ballerina.stdlib.protobuf.deserializers;
 
 import com.google.protobuf.Descriptors;
 import io.ballerina.runtime.api.creators.ValueCreator;
+import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BDecimal;
@@ -37,9 +38,9 @@ import java.math.BigDecimal;
 public class Int64Deserializer extends AbstractDeserializer {
 
     public Int64Deserializer(com.google.protobuf.CodedInputStream input, Descriptors.FieldDescriptor fieldDescriptor,
-                             BMessage bMessage, boolean isPacked) {
+                             BMessage bMessage, Type targetType, boolean isPacked) {
 
-        super(input, fieldDescriptor, bMessage, isPacked);
+        super(input, fieldDescriptor, bMessage, targetType, isPacked);
     }
 
     @Override

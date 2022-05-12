@@ -55,9 +55,10 @@ public class DeserializeHandler {
     private final BMessage bMessage;
     private final Map<Integer, Descriptors.FieldDescriptor> fieldDescriptors;
     private final Type messageType;
+    private final Type targetType;
     private boolean isAnyTypedMessage = false;
 
-    public DeserializeHandler(String descriptor, Type messageType, String hexInput)
+    public DeserializeHandler(String descriptor, String hexInput, Type targetType, Type messageType)
             throws Descriptors.DescriptorValidationException, IOException {
 
         String targetTypeName = messageType.getName();
@@ -65,27 +66,32 @@ public class DeserializeHandler {
         this.messageDescriptor = getMessageDescriptor(descriptor, targetTypeName);
         this.fieldDescriptors = computeFieldTagValues(messageDescriptor);
         this.messageType = messageType;
+        this.targetType = targetType;
         this.bMessage = new BMessage(this.initBMessage(input, fieldDescriptors, messageType, targetTypeName));
     }
 
-    public DeserializeHandler(Descriptors.FieldDescriptor fieldDescriptor, Type messageType, CodedInputStream input)
+    public DeserializeHandler(Descriptors.FieldDescriptor fieldDescriptor, CodedInputStream input, Type targetType,
+                              Type messageType)
             throws IOException {
 
         this.input = input;
         this.messageDescriptor = getMessageDescriptor(fieldDescriptor, messageType);
         this.fieldDescriptors = computeFieldTagValues(messageDescriptor);
         this.messageType = messageType;
+        this.targetType = targetType;
         this.bMessage = new BMessage(this.initBMessage(input, fieldDescriptors, messageType,
                 messageDescriptor.getFullName()));
     }
 
-    public DeserializeHandler(Descriptors.Descriptor messageDescriptor, Type messageType, String hexInput)
+    public DeserializeHandler(Descriptors.Descriptor messageDescriptor, String hexInput, Type targetType,
+                              Type messageType)
             throws IOException {
 
         this.input = getCodedInputStream(hexInput);
         this.messageDescriptor = messageDescriptor;
         this.fieldDescriptors = computeFieldTagValues(messageDescriptor);
         this.messageType = messageType;
+        this.targetType = targetType;
         this.bMessage = new BMessage(this.initBMessage(input, fieldDescriptors, messageType,
                 messageDescriptor.getFullName()));
     }
@@ -197,55 +203,55 @@ public class DeserializeHandler {
 
             switch (fieldDescriptor.getType().toProto().getNumber()) {
                 case DescriptorProtos.FieldDescriptorProto.Type.TYPE_DOUBLE_VALUE: {
-                    new DoubleDeserializer(input, fieldDescriptor, bMessage, isPacked).deserialize();
+                    new DoubleDeserializer(input, fieldDescriptor, bMessage, targetType, isPacked).deserialize();
                     break;
                 }
                 case DescriptorProtos.FieldDescriptorProto.Type.TYPE_FLOAT_VALUE: {
-                    new FloatDeserializer(input, fieldDescriptor, bMessage, isPacked).deserialize();
+                    new FloatDeserializer(input, fieldDescriptor, bMessage, targetType, isPacked).deserialize();
                     break;
                 }
                 case DescriptorProtos.FieldDescriptorProto.Type.TYPE_INT64_VALUE: {
-                    new Int64Deserializer(input, fieldDescriptor, bMessage, isPacked).deserialize();
+                    new Int64Deserializer(input, fieldDescriptor, bMessage, targetType, isPacked).deserialize();
                     break;
                 }
                 case DescriptorProtos.FieldDescriptorProto.Type.TYPE_UINT64_VALUE: {
-                    new UInt64Deserializer(input, fieldDescriptor, bMessage, isPacked).deserialize();
+                    new UInt64Deserializer(input, fieldDescriptor, bMessage, targetType, isPacked).deserialize();
                     break;
                 }
                 case DescriptorProtos.FieldDescriptorProto.Type.TYPE_INT32_VALUE: {
-                    new Int32Deserializer(input, fieldDescriptor, bMessage, isPacked).deserialize();
+                    new Int32Deserializer(input, fieldDescriptor, bMessage, targetType, isPacked).deserialize();
                     break;
                 }
                 case DescriptorProtos.FieldDescriptorProto.Type.TYPE_UINT32_VALUE: {
-                    new UInt32Deserializer(input, fieldDescriptor, bMessage, isPacked).deserialize();
+                    new UInt32Deserializer(input, fieldDescriptor, bMessage, targetType, isPacked).deserialize();
                     break;
                 }
                 case DescriptorProtos.FieldDescriptorProto.Type.TYPE_FIXED64_VALUE: {
-                    new Fixed64Deserializer(input, fieldDescriptor, bMessage, isPacked).deserialize();
+                    new Fixed64Deserializer(input, fieldDescriptor, bMessage, targetType, isPacked).deserialize();
                     break;
                 }
                 case DescriptorProtos.FieldDescriptorProto.Type.TYPE_FIXED32_VALUE: {
-                    new Fixed32Deserializer(input, fieldDescriptor, bMessage, isPacked).deserialize();
+                    new Fixed32Deserializer(input, fieldDescriptor, bMessage, targetType, isPacked).deserialize();
                     break;
                 }
                 case DescriptorProtos.FieldDescriptorProto.Type.TYPE_BOOL_VALUE: {
-                    new BooleanDeserializer(input, fieldDescriptor, bMessage).deserialize();
+                    new BooleanDeserializer(input, fieldDescriptor, bMessage, targetType).deserialize();
                     break;
                 }
                 case DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING_VALUE: {
-                    new StringDeserializer(input, fieldDescriptor, bMessage).deserialize();
+                    new StringDeserializer(input, fieldDescriptor, bMessage, targetType).deserialize();
                     break;
                 }
                 case DescriptorProtos.FieldDescriptorProto.Type.TYPE_ENUM_VALUE: {
-                    new EnumDeserializer(input, fieldDescriptor, bMessage).deserialize();
+                    new EnumDeserializer(input, fieldDescriptor, bMessage, targetType).deserialize();
                     break;
                 }
                 case DescriptorProtos.FieldDescriptorProto.Type.TYPE_BYTES_VALUE: {
-                    new BytesDeserializer(input, fieldDescriptor, bMessage).deserialize();
+                    new BytesDeserializer(input, fieldDescriptor, bMessage, targetType).deserialize();
                     break;
                 }
                 case DescriptorProtos.FieldDescriptorProto.Type.TYPE_MESSAGE_VALUE: {
-                    new MessageDeserializer(input, fieldDescriptor, messageType, bMessage)
+                    new MessageDeserializer(input, fieldDescriptor, messageType, bMessage, targetType)
                             .deserialize();
                     break;
                 }

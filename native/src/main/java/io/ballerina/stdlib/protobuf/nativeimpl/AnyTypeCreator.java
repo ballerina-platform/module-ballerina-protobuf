@@ -21,6 +21,7 @@ package io.ballerina.stdlib.protobuf.nativeimpl;
 import com.google.protobuf.Descriptors;
 import io.ballerina.runtime.api.TypeTags;
 import io.ballerina.runtime.api.types.RecordType;
+import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
@@ -85,8 +86,9 @@ public class AnyTypeCreator {
                     case WRAPPER_BYTES_TYPE_URL:
                         Descriptors.Descriptor descriptor = com.google.protobuf.WrappersProto.getDescriptor()
                                 .findMessageTypeByName(getMessageNameFromTypeUrl(typeUrl));
-                        DeserializeHandler deserializeHandler = new DeserializeHandler(descriptor, null,
-                                value.getStringValue(StringUtils.fromString("value")).getValue());
+                        DeserializeHandler deserializeHandler = new DeserializeHandler(descriptor,
+                                value.getStringValue(StringUtils.fromString("value")).getValue(),
+                                targetType.getDescribingType(), null);
                         deserializeHandler.deserialize();
                         return deserializeHandler.getBMessage();
                     case EMPTY_TYPE_URL:
@@ -108,7 +110,8 @@ public class AnyTypeCreator {
         if (expectedTypeTag == TypeTags.RECORD_TYPE_TAG) {
             if (value.get(StringUtils.fromString("value")) instanceof BString) {
                 try {
-                    Object data = deserialize((RecordType) targetType.getDescribingType(),
+                    Object data = deserialize(targetType.getDescribingType(),
+                            (RecordType) targetType.getDescribingType(),
                             value.getStringValue(StringUtils.fromString("value")).getValue());
                     return CloneWithType.cloneWithType(data, targetType);
                 } catch (Descriptors.DescriptorValidationException | IOException e) {
@@ -131,12 +134,12 @@ public class AnyTypeCreator {
         return literals[literals.length - 1];
     }
 
-    private static Object deserialize(RecordType recordType, String content)
+    private static Object deserialize(Type targetType, RecordType recordType, String content)
             throws Descriptors.DescriptorValidationException, IOException {
 
         if (isDescriptorAnnotationAvailable(recordType)) {
             String annotation = getProtobufDescAnnotation(recordType);
-            DeserializeHandler m2 = new DeserializeHandler(annotation, recordType, content);
+            DeserializeHandler m2 = new DeserializeHandler(annotation, content, targetType, recordType);
             m2.deserialize();
             return m2.getBMessage();
         } else {

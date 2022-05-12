@@ -38,7 +38,8 @@ public abstract class AbstractDeserializer {
     com.google.protobuf.CodedInputStream input;
     Descriptors.FieldDescriptor fieldDescriptor;
     BMessage bMessage;
-    Type type;
+    Type messageType;
+    Type targetType;
     boolean isPacked = false;
 
     protected static final String GOOGLE_PROTOBUF_STRUCT_FIELDS_ENTRY_KEY = "google.protobuf.Struct.FieldsEntry.key";
@@ -64,29 +65,32 @@ public abstract class AbstractDeserializer {
     protected static final ArrayType FLOAT_ARRAY_TYPE = TypeCreator.createArrayType(PredefinedTypes.TYPE_FLOAT);
 
     public AbstractDeserializer(com.google.protobuf.CodedInputStream input, Descriptors.FieldDescriptor fieldDescriptor,
-                                BMessage bMessage) {
+                                BMessage bMessage, Type targetType) {
 
         this.bMessage = bMessage;
         this.fieldDescriptor = fieldDescriptor;
         this.input = input;
+        this.targetType = targetType;
     }
 
     public AbstractDeserializer(com.google.protobuf.CodedInputStream input, Descriptors.FieldDescriptor fieldDescriptor,
-                                BMessage bMessage, boolean isPacked) {
+                                BMessage bMessage, Type targetType, boolean isPacked) {
 
         this.bMessage = bMessage;
         this.fieldDescriptor = fieldDescriptor;
         this.input = input;
         this.isPacked = isPacked;
+        this.targetType = targetType;
     }
 
     public AbstractDeserializer(com.google.protobuf.CodedInputStream input, Descriptors.FieldDescriptor fieldDescriptor,
-                                Type type, BMessage bMessage) {
+                                BMessage bMessage, Type targetType, Type messageType) {
 
         this.bMessage = bMessage;
         this.fieldDescriptor = fieldDescriptor;
         this.input = input;
-        this.type = type;
+        this.messageType = messageType;
+        this.targetType = targetType;
     }
 
     public boolean isBMap() {

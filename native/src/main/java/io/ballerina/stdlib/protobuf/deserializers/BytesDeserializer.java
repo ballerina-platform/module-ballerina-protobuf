@@ -20,6 +20,7 @@ package io.ballerina.stdlib.protobuf.deserializers;
 
 import com.google.protobuf.Descriptors;
 import io.ballerina.runtime.api.creators.ValueCreator;
+import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
@@ -35,9 +36,9 @@ import java.io.IOException;
 public class BytesDeserializer extends AbstractDeserializer {
 
     public BytesDeserializer(com.google.protobuf.CodedInputStream input, Descriptors.FieldDescriptor fieldDescriptor,
-                             BMessage bMessage) {
+                             BMessage bMessage, Type targetType) {
 
-        super(input, fieldDescriptor, bMessage);
+        super(input, fieldDescriptor, bMessage, targetType);
     }
 
     @Override
