@@ -174,6 +174,24 @@ isolated function testUnpackStringValue() returns error? {
 }
 
 @test:Config {}
+isolated function testUnpackTimestamp() returns error? {
+
+    Any a = {typeUrl: "type.googleapis.com/google.protobuf.Timestamp", value: "08CC99F4930610E08792C601"};
+    time:Utc msg = check unpack(a, time:Utc);
+    time:Utc expected = [1652362444, 0.415532d];
+    test:assertEquals(msg, expected);
+}
+
+@test:Config {}
+isolated function testUnpackDuration() returns error? {
+
+    Any a = {typeUrl: "type.googleapis.com/google.protobuf.Duration", value: "08641080DCEB5D"};
+    time:Seconds msg = check unpack(a, time:Seconds);
+    time:Seconds expected = 100.1968;
+    test:assertEquals(msg, expected);
+}
+
+@test:Config {}
 isolated function testGetProtoTypesAnyModule() {
     _ = getProtoTypesAnyModuleForTest();
 }
