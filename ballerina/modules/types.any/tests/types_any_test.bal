@@ -64,39 +64,59 @@ isolated function testGetNameFromRecord() {
 
 @test:Config {}
 isolated function testUnpackWithAnnotatedMessage() returns error? {
-    Any a = {"typeUrl": "type.googleapis.com/AnnotatedMessage", "value": "0900000000000025401500003841180A200B280C310D000000000000003D0E00000040014A0457534F32620B0A0942616C6C6572696E61"};
+    Any a = {"typeUrl": "type.googleapis.com/AnnotatedMessage", "value": "0900000000000025401500002841180A200B280E302D3D7A0000004159010000000000004801520457534F325A0B0A0942616C6C6572696E61"};
     AnnotatedMessage msg = check unpack(a, AnnotatedMessage);
     AnnotatedMessage expected = {
         doubleData: 10.5,
-        floatData: 11.5,
-        int64Data: 10,
+        floatData: 10.5,
+        uInt32Data: 10,
         uInt64Data: 11,
-        int32Data: 12,
-        fixed64Data: 13,
-        fixed32Data: 14,
+        int32Data: 14,
+        int64Data: 45,
+        fixed32Data: 122,
+        fixed64Data: 345,
         booleanData: true,
         stringData: "WSO2",
-        enumData: enumData0,
         messageData: {"messageData1": "Ballerina"}
     };
     test:assertEquals(msg, expected);
 }
 
 @test:Config {}
-isolated function testUnpackWithAnnotatedRepeatMessage() returns error? {
-    Any a = {typeUrl: "type.googleapis.com/AnnotatedMessageWithRepeats", value: "0A10000000000000254033333333333325401204000038411A010A22010B2A010C32080D000000000000003A040E0000004201014A0457534F32620B0A0942616C6C6572696E61"};
+isolated function testUnpackWithAnnotatedRepeatMessageWithPack() returns error? {
+    Any a = {typeUrl: "type.googleapis.com/AnnotatedMessageWithRepeats", value: "0A10000000000000254033333333333325401208000038419A9939411A02090822020B0C2A020C0D32020A0B3A080E0000000F00000042100D0000000000000010000000000000004A0101520457534F325A0B0A0942616C6C6572696E61"};
     AnnotatedMessageWithRepeats msg = check unpack(a, AnnotatedMessageWithRepeats);
     AnnotatedMessageWithRepeats expected = {
         doubleData: [10.5, 10.6],
-        floatData: [11.5],
-        int64Data: [10],
-        uInt64Data: [11],
-        int32Data: [12],
-        fixed64Data: [13],
-        fixed32Data: [14],
+        floatData: [11.5, 11.6],
+        uInt32Data: [9, 8],
+        uInt64Data: [11, 12],
+        int32Data: [12, 13],
+        int64Data: [10, 11],
+        fixed32Data: [14, 15],
+        fixed64Data: [13, 16],
         booleanData: [true],
         stringData: ["WSO2"],
-        enumData: [],
+        messageData: [{messageData1: "Ballerina"}]
+    };
+    test:assertEquals(msg, expected);
+}
+
+@test:Config {}
+isolated function testUnpackWithAnnotatedRepeatMessageWithoutPack() returns error? {
+    Any a = {typeUrl: "type.googleapis.com/AnnotatedMessageWithRepeats", value: "0900000000000025400933333333333325401500003841159A99394118091808200B200C280C280D300A300B3D0E0000003D0F000000410D000000000000004110000000000000004801520457534F325A0B0A0942616C6C6572696E61"};
+    AnnotatedMessageWithRepeats msg = check unpack(a, AnnotatedMessageWithRepeats);
+    AnnotatedMessageWithRepeats expected = {
+        doubleData: [10.5, 10.6],
+        floatData: [11.5, 11.6],
+        uInt32Data: [9, 8],
+        uInt64Data: [11, 12],
+        int32Data: [12, 13],
+        int64Data: [10, 11],
+        fixed32Data: [14, 15],
+        fixed64Data: [13, 16],
+        booleanData: [true],
+        stringData: ["WSO2"],
         messageData: [{messageData1: "Ballerina"}]
     };
     test:assertEquals(msg, expected);
