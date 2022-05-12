@@ -74,7 +74,7 @@ public class Int32Deserializer extends AbstractDeserializer {
             BigDecimal nanos = new BigDecimal(readContent())
                     .divide(ANALOG_GIGA, MathContext.DECIMAL128);
             bArray.add(1, ValueCreator.createDecimalValue(nanos));
-        } else if (bMessage instanceof BDecimal
+        } else if (bMessage.getContent() instanceof BDecimal
                 && fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_DURATION_NANOS)) {
             BigDecimal nanos = new BigDecimal(readContent())
                     .divide(ANALOG_GIGA, MathContext.DECIMAL128);

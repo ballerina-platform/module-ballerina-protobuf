@@ -94,11 +94,21 @@ public class AnyTypeCreator {
                     case EMPTY_TYPE_URL:
                         return null;
                     case TIMESTAMP_TYPE_URL:
-                        BArray utcTime = value.getArrayValue(StringUtils.fromString(ANY_FIELD_VALUE));
+                        Descriptors.Descriptor timestampDescriptor = com.google.protobuf.Timestamp.getDescriptor();
+                        DeserializeHandler timestampDeserializeHandler = new DeserializeHandler(timestampDescriptor,
+                                value.getStringValue(StringUtils.fromString("value")).getValue(),
+                                targetType.getDescribingType(), targetType.getDescribingType());
+                        timestampDeserializeHandler.deserialize();
+                        BArray utcTime = (BArray) timestampDeserializeHandler.getBMessage();
                         utcTime.freezeDirect();
                         return utcTime;
                     case DURATION_TYPE_URL:
-                        return value.get(StringUtils.fromString(ANY_FIELD_VALUE));
+                        Descriptors.Descriptor durationDescriptor = com.google.protobuf.Duration.getDescriptor();
+                        DeserializeHandler durationDeserializeHandler = new DeserializeHandler(durationDescriptor,
+                                value.getStringValue(StringUtils.fromString("value")).getValue(),
+                                targetType.getDescribingType(), targetType.getDescribingType());
+                        durationDeserializeHandler.deserialize();
+                        return durationDeserializeHandler.getBMessage();
                     default:
                         break;
                 }

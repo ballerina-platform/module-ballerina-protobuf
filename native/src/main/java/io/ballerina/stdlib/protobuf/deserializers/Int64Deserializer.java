@@ -74,7 +74,7 @@ public class Int64Deserializer extends AbstractDeserializer {
             bArray.add(0, readContent());
         } else if (bMessage.getContent() instanceof BDecimal
                 && fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_DURATION_SECONDS)) {
-            bMessage.setContent(new BigDecimal(readContent()));
+            bMessage.setContent(ValueCreator.createDecimalValue(new BigDecimal(readContent())));
         } else {
             bMessage.setContent(readContent());
         }
