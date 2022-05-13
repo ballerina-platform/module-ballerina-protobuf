@@ -27,6 +27,16 @@ isolated function testUnpackDoubleOneofDataWithAnnotation() returns error? {
 }
 
 @test:Config {}
+isolated function testUnpackFloatOneofDataWithAnnotation() returns error? {
+    Any a = {typeUrl: "type.googleapis.com/AnnotatedMessageWithOneof", value: "1500002841"};
+    AnnotatedMessageWithOneof msg = check unpack(a, AnnotatedMessageWithOneof);
+    AnnotatedMessageWithOneof expected = {
+        floatData: 10.5
+    };
+    test:assertEquals(msg, expected);
+}
+
+@test:Config {}
 isolated function testUnpackUInt32OneofDataWithAnnotation() returns error? {
     Any a = {typeUrl: "type.googleapis.com/AnnotatedMessageWithOneof", value: "1864"};
     AnnotatedMessageWithOneof msg = check unpack(a, AnnotatedMessageWithOneof);
