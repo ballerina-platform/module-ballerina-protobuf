@@ -19,7 +19,6 @@
 package io.ballerina.stdlib.protobuf.deserializers;
 
 import com.google.protobuf.Descriptors;
-import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BArray;
@@ -48,12 +47,7 @@ public class DoubleDeserializer extends AbstractDeserializer {
         if (isBMap()) {
             BMap<BString, Object> bMap = (BMap<BString, Object>) bMessage.getContent();
             if (fieldDescriptor.isRepeated()) {
-                BArray floatArray = ValueCreator.createArrayValue(FLOAT_ARRAY_TYPE);
-                if (bMap.containsKey(bFieldName)) {
-                    floatArray = (BArray) bMap.get(bFieldName);
-                } else {
-                    bMap.put(bFieldName, floatArray);
-                }
+                BArray floatArray = (BArray) bMap.get(bFieldName);
                 if (isPacked) {
                     while (input.getBytesUntilLimit() > 0) {
                         floatArray.add(floatArray.size(), readContent());

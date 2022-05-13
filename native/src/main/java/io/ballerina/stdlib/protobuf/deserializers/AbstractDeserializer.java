@@ -19,9 +19,6 @@
 package io.ballerina.stdlib.protobuf.deserializers;
 
 import com.google.protobuf.Descriptors;
-import io.ballerina.runtime.api.PredefinedTypes;
-import io.ballerina.runtime.api.creators.TypeCreator;
-import io.ballerina.runtime.api.types.ArrayType;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
@@ -56,13 +53,6 @@ public abstract class AbstractDeserializer {
     protected static final String GOOGLE_PROTOBUF_LISTVALUE_VALUES = "google.protobuf.ListValue.values";
     protected static final String GOOGLE_PROTOBUF_STRUCTVALUE_VALUES = "google.protobuf.StructValue.values";
     protected static final BigDecimal ANALOG_GIGA = new BigDecimal(1000000000);
-
-    protected static final ArrayType STRING_ARRAY_TYPE = TypeCreator.createArrayType(PredefinedTypes.TYPE_STRING);
-    protected static final ArrayType BOOLEAN_ARRAY_TYPE = TypeCreator.createArrayType(PredefinedTypes.TYPE_BOOLEAN);
-    protected static final ArrayType INT_ARRAY_TYPE = TypeCreator.createArrayType(PredefinedTypes.TYPE_INT);
-    protected static final ArrayType INT32_ARRAY_TYPE = TypeCreator.createArrayType(
-            PredefinedTypes.TYPE_INT_UNSIGNED_32);
-    protected static final ArrayType FLOAT_ARRAY_TYPE = TypeCreator.createArrayType(PredefinedTypes.TYPE_FLOAT);
 
     public AbstractDeserializer(com.google.protobuf.CodedInputStream input, Descriptors.FieldDescriptor fieldDescriptor,
                                 BMessage bMessage, Type targetType) {

@@ -51,12 +51,7 @@ public class Int32Deserializer extends AbstractDeserializer {
         if (isBMap()) {
             BMap<BString, Object> bMap = (BMap<BString, Object>) bMessage.getContent();
             if (fieldDescriptor.isRepeated()) {
-                BArray int32Array = ValueCreator.createArrayValue(INT32_ARRAY_TYPE);
-                if (bMap.containsKey(bFieldName)) {
-                    int32Array = (BArray) bMap.get(bFieldName);
-                } else {
-                    bMap.put(bFieldName, int32Array);
-                }
+                BArray int32Array = (BArray) bMap.get(bFieldName);
                 if (isPacked) {
                     while (input.getBytesUntilLimit() > 0) {
                         int32Array.add(int32Array.size(), readContent());

@@ -19,7 +19,6 @@
 package io.ballerina.stdlib.protobuf.deserializers;
 
 import com.google.protobuf.Descriptors;
-import io.ballerina.runtime.api.creators.ValueCreator;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BArray;
@@ -48,12 +47,7 @@ public class BooleanDeserializer extends AbstractDeserializer {
         if (isBMap()) {
             BMap<BString, Object> bMap = (BMap<BString, Object>) bMessage.getContent();
             if (fieldDescriptor.isRepeated()) {
-                BArray booleanArray = ValueCreator.createArrayValue(BOOLEAN_ARRAY_TYPE);
-                if (bMap.containsKey(bFieldName)) {
-                    booleanArray = (BArray) bMap.get(bFieldName);
-                } else {
-                    bMap.put(bFieldName, booleanArray);
-                }
+                BArray booleanArray = (BArray) bMap.get(bFieldName);
                 booleanArray.add(booleanArray.size(), readContent());
             } else if (fieldDescriptor.getContainingOneof() != null) {
                 bMap.put(StringUtils.fromString(fieldDescriptor.getName()), readContent());

@@ -50,12 +50,7 @@ public class Int64Deserializer extends AbstractDeserializer {
         if (isBMap()) {
             BMap<BString, Object> bMap = (BMap<BString, Object>) bMessage.getContent();
             if (fieldDescriptor.isRepeated()) {
-                BArray intArray = ValueCreator.createArrayValue(INT_ARRAY_TYPE);
-                if (bMap.containsKey(bFieldName)) {
-                    intArray = (BArray) bMap.get(bFieldName);
-                } else {
-                    bMap.put(bFieldName, intArray);
-                }
+                BArray intArray = (BArray) bMap.get(bFieldName);
                 if (isPacked) {
                     while (input.getBytesUntilLimit() > 0) {
                         intArray.add(intArray.size(), readContent());
