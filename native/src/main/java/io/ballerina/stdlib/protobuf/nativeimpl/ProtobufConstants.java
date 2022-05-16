@@ -25,7 +25,9 @@ package io.ballerina.stdlib.protobuf.nativeimpl;
  */
 public class ProtobufConstants {
 
-    private ProtobufConstants() {}
+    private ProtobufConstants() {
+
+    }
 
     // Protobuf predefined messages type URLs
     public static final String WRAPPER_DOUBLE_TYPE_URL = "type.googleapis.com/google.protobuf.DoubleValue";
@@ -40,6 +42,7 @@ public class ProtobufConstants {
     public static final String EMPTY_TYPE_URL = "type.googleapis.com/google.protobuf.Empty";
     public static final String TIMESTAMP_TYPE_URL = "type.googleapis.com/google.protobuf.Timestamp";
     public static final String DURATION_TYPE_URL = "type.googleapis.com/google.protobuf.Duration";
+    public static final String STRUCT_TYPE_URL = "type.googleapis.com/google.protobuf.Struct";
 
     // Proto predefined messages names
     public static final String WRAPPER_DOUBLE_TYPE_NAME = "google.protobuf.DoubleValue";

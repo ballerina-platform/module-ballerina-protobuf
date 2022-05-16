@@ -27,6 +27,7 @@ import java.util.Map;
 
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.DURATION_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.EMPTY_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.STRUCT_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.TIMESTAMP_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_BOOL_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_BYTES_TYPE_URL;
@@ -70,6 +71,7 @@ public class ModuleUtils {
         anyTypesMap.put(EMPTY_TYPE_URL, TypeTags.NULL_TAG);
         anyTypesMap.put(TIMESTAMP_TYPE_URL, TypeTags.INTERSECTION_TAG);
         anyTypesMap.put(DURATION_TYPE_URL, TypeTags.DECIMAL_TAG);
+        anyTypesMap.put(STRUCT_TYPE_URL, TypeTags.MAP_TAG);
     }
 
     public static Module getProtoTypesAnyModule() {

@@ -37,6 +37,7 @@ import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_FIEL
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_FIELD_VALUE;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.DURATION_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.EMPTY_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.STRUCT_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.TIMESTAMP_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_BOOL_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_BYTES_TYPE_URL;
@@ -109,6 +110,13 @@ public class AnyTypeCreator {
                                 targetType.getDescribingType(), targetType.getDescribingType());
                         durationDeserializeHandler.deserialize();
                         return durationDeserializeHandler.getBMessage();
+                    case STRUCT_TYPE_URL:
+                        Descriptors.Descriptor structDescriptor = com.google.protobuf.Struct.getDescriptor();
+                        DeserializeHandler structDeserializeHandler = new DeserializeHandler(structDescriptor,
+                                value.getStringValue(StringUtils.fromString("value")).getValue(),
+                                targetType.getDescribingType(), targetType.getDescribingType());
+                        structDeserializeHandler.deserialize();
+                        return structDeserializeHandler.getBMessage();
                     default:
                         break;
                 }
