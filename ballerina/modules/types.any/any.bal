@@ -19,7 +19,7 @@ import ballerina/time;
 import ballerina/protobuf;
 
 # Subtypes that are allowed as Any type.
-public type ValueType int|float|string|boolean|time:Utc|time:Seconds|record {}|()|byte[];
+public type ValueType int|float|string|boolean|time:Utc|time:Seconds|record {}|()|byte[]|map<anydata>;
 
 # Type descriptor of ValueType.
 public type ValueTypeDesc typedesc<ValueType>;
@@ -100,7 +100,7 @@ isolated function getUrlSuffixFromValue(ValueType anyMessage) returns string {
     } else if anyMessage is record {||} {
         return "google.protobuf.Empty";
     } else {
-        return externGetNameFromRecord(<record {}> anyMessage);
+        return externGetNameFromRecord(<record {}>anyMessage);
     }
 }
 
