@@ -105,3 +105,23 @@ isolated function testUnpackDuration() returns error? {
     time:Seconds expected = 100.1968;
     test:assertEquals(msg, expected);
 }
+
+type mapTypeForTest map<anydata>;
+
+@test:Config {}
+isolated function testUnpackStruct1() returns error? {
+
+    Any a = {typeUrl: "type.googleapis.com/google.protobuf.Struct", value: "0A0E0A044E616D6512061A044A6F686E0A100A0341676512091100000000000038400A0D0A074D61727269656412022000"};
+    map<anydata> msg = check unpack(a, mapTypeForTest);
+    map<anydata> expected = {"Name": "John", "Age": 24.0, "Married": false};
+    test:assertEquals(msg, expected);
+}
+
+@test:Config {}
+isolated function testUnpackStruct2() returns error? {
+
+    Any a = {typeUrl: "type.googleapis.com/google.protobuf.Struct", value: "0A0E0A044E616D6512061A0457534F320A100A034167651209110000000000003840"};
+    map<anydata> msg = check unpack(a, mapTypeForTest);
+    map<anydata> expected = {"Name": "WSO2", "Age": 24.0};
+    test:assertEquals(msg, expected);
+}

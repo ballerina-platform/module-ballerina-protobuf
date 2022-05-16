@@ -37,7 +37,8 @@ isolated function testPackAndUnpackForNil() returns Error? {
     NilType unpackedNil1 = check unpack(anyNil1, NilType);
     test:assertEquals(unpackedNil1, ());
 
-    Any anyNil2 = {typeUrl: "type.googleapis.com/google.protobuf.Empty", value: {}};
+    record {} empty = {};
+    Any anyNil2 = {typeUrl: "type.googleapis.com/google.protobuf.Empty", value: empty};
     NilType unpackedNil2 = check unpack(anyNil2, NilType);
     test:assertEquals(unpackedNil2, ());
 }
