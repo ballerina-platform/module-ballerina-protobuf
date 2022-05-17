@@ -95,7 +95,6 @@ public class DeserializeHandler {
         this.bMessage = new BMessage(this.initBMessage(input, fieldDescriptors, messageType,
                 messageDescriptor.getFullName()));
     }
-    // com.google.protobuf.WrappersProto.getDescriptor().findMessageTypeByName("StringValue")
 
     private static CodedInputStream getCodedInputStream(String hexInput) {
 

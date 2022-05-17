@@ -35,6 +35,7 @@ import java.util.Arrays;
 
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_FIELD_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_FIELD_VALUE;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.DURATION_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.EMPTY_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.STRUCT_TYPE_URL;
@@ -117,6 +118,12 @@ public class AnyTypeCreator {
                                 targetType.getDescribingType(), targetType.getDescribingType());
                         structDeserializeHandler.deserialize();
                         return structDeserializeHandler.getBMessage();
+                    case ANY_TYPE_URL:
+                        Descriptors.Descriptor anyDescriptor = com.google.protobuf.Any.getDescriptor();
+                        DeserializeHandler anyDeserializeHandler = new DeserializeHandler(anyDescriptor,
+                                value.getStringValue(StringUtils.fromString("value")).getValue(),
+                                targetType.getDescribingType(), targetType.getDescribingType());
+                        return anyDeserializeHandler.getBMessage();
                     default:
                         break;
                 }

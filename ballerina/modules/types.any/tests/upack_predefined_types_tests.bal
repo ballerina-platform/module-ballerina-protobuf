@@ -168,3 +168,25 @@ isolated function testUnpackStruct2() returns error? {
     map<anydata> expected = {"Name": "WSO2", "Age": 24.0};
     test:assertEquals(msg, expected);
 }
+
+@test:Config {}
+isolated function testUnpackNestedAny() returns error? {
+
+    Any a = {typeUrl: "type.googleapis.com/google.protobuf.Any", value: "0A24747970652E676F6F676C65617069732E636F6D2F416E6E6F74617465644D65737361676512390900000000000025401500002841180A200B280E302D3D7A0000004159010000000000004801520457534F325A0B0A0942616C6C6572696E61"};
+    Any msg1 = check unpack(a, Any);
+    AnnotatedMessage msg = check unpack(msg1, AnnotatedMessage);
+    AnnotatedMessage expected = {
+        doubleData: 10.5,
+        floatData: 10.5,
+        uInt32Data: 10,
+        uInt64Data: 11,
+        int32Data: 14,
+        int64Data: 45,
+        fixed32Data: 122,
+        fixed64Data: 345,
+        booleanData: true,
+        stringData: "WSO2",
+        messageData: {"messageData1": "Ballerina"}
+    };
+    test:assertEquals(msg, expected);
+}

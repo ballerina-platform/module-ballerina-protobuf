@@ -25,6 +25,7 @@ import io.ballerina.runtime.api.TypeTags;
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.DURATION_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.EMPTY_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.STRUCT_TYPE_URL;
@@ -72,6 +73,7 @@ public class ModuleUtils {
         anyTypesMap.put(TIMESTAMP_TYPE_URL, TypeTags.INTERSECTION_TAG);
         anyTypesMap.put(DURATION_TYPE_URL, TypeTags.DECIMAL_TAG);
         anyTypesMap.put(STRUCT_TYPE_URL, TypeTags.MAP_TAG);
+        anyTypesMap.put(ANY_TYPE_URL, TypeTags.RECORD_TYPE_TAG);
     }
 
     public static Module getProtoTypesAnyModule() {

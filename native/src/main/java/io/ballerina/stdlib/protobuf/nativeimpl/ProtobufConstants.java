@@ -43,6 +43,7 @@ public class ProtobufConstants {
     public static final String TIMESTAMP_TYPE_URL = "type.googleapis.com/google.protobuf.Timestamp";
     public static final String DURATION_TYPE_URL = "type.googleapis.com/google.protobuf.Duration";
     public static final String STRUCT_TYPE_URL = "type.googleapis.com/google.protobuf.Struct";
+    public static final String ANY_TYPE_URL = "type.googleapis.com/google.protobuf.Any";
 
     // Proto predefined messages names
     public static final String WRAPPER_DOUBLE_TYPE_NAME = "google.protobuf.DoubleValue";
