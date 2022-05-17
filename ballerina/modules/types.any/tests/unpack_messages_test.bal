@@ -60,9 +60,42 @@ isolated function testGetUrlSuffix() {
 }
 
 @test:Config {}
+isolated function testUnpackError() {
+
+    float floatValue = 234f;
+    Any anyFloat = pack(floatValue);
+    int|Error err = unpack(anyFloat, int);
+    if err is Error {
+        string expectedErr = "Type type.googleapis.com/google.protobuf.FloatValue cannot unpack to int";
+        test:assertEquals(err.message(), expectedErr);
+    } else {
+        test:assertFail("Expected 'any:Error not found");
+    }
+}
+
+@test:Config {}
 isolated function testGetNameFromRecord() {
     Person person = {name: "John", code: 23};
     test:assertEquals(externGetNameFromRecord(person), "Person");
+}
+
+@test:Config {}
+isolated function testAnyRecords() {
+    Any[] anyTypeArr = [
+        pack(<Person>{name: "John", code: 23}),
+        pack("Hello"),
+        pack(10)
+    ];
+    Person person = {name: "John", code: 23};
+    Any anyRecord = pack(person);
+    ContextAny anyContext = {content: anyRecord, headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+    ContextAnyStream contextAnyStream = {content: anyTypeArr.toStream(), headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
+
+    test:assertEquals(anyRecord.typeUrl, "type.googleapis.com/Person");
+    test:assertEquals(anyRecord.value, person);
+    test:assertEquals(anyContext.content, anyRecord);
+    test:assertEquals(anyContext.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
+    test:assertEquals(contextAnyStream.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
 }
 
 @test:Config {}
