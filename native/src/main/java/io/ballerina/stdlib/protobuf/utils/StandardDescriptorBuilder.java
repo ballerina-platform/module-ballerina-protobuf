@@ -43,6 +43,10 @@ import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_
  */
 public class StandardDescriptorBuilder {
 
+    private StandardDescriptorBuilder() {
+
+    }
+
     private static final Map<String, Descriptors.FileDescriptor> standardLibDescriptorMapForMessageName;
 
     static {
