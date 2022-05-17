@@ -274,3 +274,17 @@ public type AnnotatedMessageWithRepeats record {|
     string[] stringData = [];
     MessageData[] messageData = [];
 |};
+
+public type MessageWithoutAnnotation record {|
+    float doubleData = 0.0;
+    float floatData = 0.0;
+    int uInt32Data = 0;
+    int uInt64Data = 0;
+    int int32Data = 0;
+    int int64Data = 0;
+    int fixed32Data = 0;
+    int fixed64Data = 0;
+    boolean booleanData = false;
+    string stringData = "";
+    MessageData messageData = {};
+|};

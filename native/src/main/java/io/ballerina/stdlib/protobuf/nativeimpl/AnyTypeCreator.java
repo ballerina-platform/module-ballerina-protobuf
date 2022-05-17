@@ -28,6 +28,7 @@ import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.runtime.api.values.BTypedesc;
 import io.ballerina.stdlib.protobuf.deserializers.DeserializeHandler;
+import io.ballerina.stdlib.protobuf.exceptions.AnnotationUnavailableException;
 import org.ballerinalang.langlib.value.CloneWithType;
 
 import java.io.IOException;
@@ -141,6 +142,8 @@ public class AnyTypeCreator {
                     return CloneWithType.cloneWithType(data, targetType);
                 } catch (Descriptors.DescriptorValidationException | IOException e) {
                     return ErrorGenerator.createError(Errors.TypeMismatchError, e.toString());
+                } catch (AnnotationUnavailableException e) {
+                    return ErrorGenerator.createError(Errors.TypeMismatchError, e.getMessage());
                 }
             } else {
                 return CloneWithType.cloneWithType(value.getMapValue(StringUtils.fromString(ANY_FIELD_VALUE)),
@@ -160,7 +163,7 @@ public class AnyTypeCreator {
     }
 
     private static Object deserialize(Type targetType, RecordType recordType, String content)
-            throws Descriptors.DescriptorValidationException, IOException {
+            throws Descriptors.DescriptorValidationException, IOException, AnnotationUnavailableException {
 
         if (isDescriptorAnnotationAvailable(recordType)) {
             String annotation = getProtobufDescAnnotation(recordType);
@@ -168,8 +171,7 @@ public class AnyTypeCreator {
             m2.deserialize();
             return m2.getBMessage();
         } else {
-            return ErrorGenerator.createError(Errors.TypeMismatchError,
-                    "Unavailable annotation for record " + recordType.getName());
+            throw new AnnotationUnavailableException("Unavailable annotation for record " + recordType.getName());
         }
     }
 
