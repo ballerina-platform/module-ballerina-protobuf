@@ -46,6 +46,7 @@ isolated function testPackAndUnpackForNil() returns Error? {
 @test:Config {}
 isolated function testGetUrlSuffix() {
     Person person = {name: "John", code: 23};
+    byte[] bytesData = "WSO2".toBytes();
 
     test:assertEquals(getUrlSuffixFromValue(234f), "google.protobuf.FloatValue");
     test:assertEquals(getUrlSuffixFromValue(234), "google.protobuf.Int64Value");
@@ -54,6 +55,7 @@ isolated function testGetUrlSuffix() {
     test:assertEquals(getUrlSuffixFromValue(time:utcNow()), "google.protobuf.Timestamp");
     test:assertEquals(getUrlSuffixFromValue(<time:Seconds>1002d), "google.protobuf.Duration");
     test:assertEquals(getUrlSuffixFromValue(()), "google.protobuf.Empty");
+    test:assertEquals(getUrlSuffixFromValue(bytesData), "google.protobuf.BytesValue");
     test:assertEquals(getUrlSuffixFromValue(person), "Person");
 }
 
