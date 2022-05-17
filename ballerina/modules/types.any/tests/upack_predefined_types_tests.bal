@@ -106,7 +106,50 @@ isolated function testUnpackDuration() returns error? {
     test:assertEquals(msg, expected);
 }
 
-type mapTypeForTest map<anydata>;
+@test:Config {}
+isolated function testUnpackBytes() returns error? {
+
+    Any a = {typeUrl: "type.googleapis.com/google.protobuf.BytesValue", value: "0A0457534F32"};
+    bytesTypeForTest msg = check unpack(a, bytesTypeForTest);
+    byte[] expected = "WSO2".toBytes();
+    test:assertEquals(msg, expected);
+}
+
+@test:Config {}
+isolated function testUnpackBytesInMessage() returns error? {
+
+    Any a = {typeUrl: "type.googleapis.com/AnnotatedMessageWithBytes", value: "0A0457534F32"};
+    AnnotatedMessageWithBytes msg = check unpack(a, AnnotatedMessageWithBytes);
+    AnnotatedMessageWithBytes expected = {bytesData: "WSO2".toBytes()};
+    test:assertEquals(msg, expected);
+}
+
+@test:Config {}
+isolated function testUnpackBytesOneof() returns error? {
+
+    Any a = {typeUrl: "type.googleapis.com/AnnotatedMessageWithBytesOneof", value: "0A0457534F32"};
+    AnnotatedMessageWithBytesOneof msg = check unpack(a, AnnotatedMessageWithBytesOneof);
+    AnnotatedMessageWithBytesOneof expected = {bytesData: "WSO2".toBytes()};
+    test:assertEquals(msg, expected);
+}
+
+@test:Config {}
+isolated function testUnpackEnumMessage() returns error? {
+
+    Any a = {typeUrl: "type.googleapis.com/AnnotatedMessageWithEnum", value: "0801"};
+    AnnotatedMessageWithEnum msg = check unpack(a, AnnotatedMessageWithEnum);
+    AnnotatedMessageWithEnum expected = {enumData: enumData1};
+    test:assertEquals(msg, expected);
+}
+
+@test:Config {}
+isolated function testUnpackEnumMessageOneof() returns error? {
+
+    Any a = {typeUrl: "type.googleapis.com/AnnotatedMessageWithEnumOneof", value: "0801"};
+    AnnotatedMessageWithEnumOneof msg = check unpack(a, AnnotatedMessageWithEnumOneof);
+    AnnotatedMessageWithEnumOneof expected = {enumData: enumData1};
+    test:assertEquals(msg, expected);
+}
 
 @test:Config {}
 isolated function testUnpackStruct1() returns error? {
