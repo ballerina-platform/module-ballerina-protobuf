@@ -24,4 +24,5 @@ module io.ballerina.stdlib.protobuf {
     exports io.ballerina.stdlib.protobuf.deserializers;
     exports io.ballerina.stdlib.protobuf.messages;
     exports io.ballerina.stdlib.protobuf.utils;
+    exports io.ballerina.stdlib.protobuf.exceptions;
 }
