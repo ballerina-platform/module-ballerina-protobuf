@@ -61,10 +61,11 @@ public type ContextAnyStream record {|
 #
 # + message - The record or the scalar value to be packed as Any type
 # + return - Any value representation of the given message
-public isolated function pack(ValueType message) returns Any {
+public isolated function pack(ValueType message) returns Any|Error {
     string urlPrefix = "type.googleapis.com/";
     string typeUrl = urlPrefix + getUrlSuffixFromValue(message);
-    return {typeUrl: typeUrl, value: message};
+    string content = check getSerializedString(message, typeUrl);
+    return {typeUrl: typeUrl, value: content};
 }
 
 # Unpack and return the specified Ballerina value
@@ -73,6 +74,10 @@ public isolated function pack(ValueType message) returns Any {
 # + targetTypeOfAny - Type descriptor of the return value
 # + return - Return a value of the given type
 public isolated function unpack(Any anyValue, ValueTypeDesc targetTypeOfAny = <>) returns targetTypeOfAny|Error = @java:Method {
+    'class: "io.ballerina.stdlib.protobuf.nativeimpl.AnyTypeCreator"
+} external;
+
+isolated function getSerializedString(ValueType message, string typeUrl) returns string|Error = @java:Method {
     'class: "io.ballerina.stdlib.protobuf.nativeimpl.AnyTypeCreator"
 } external;
 
