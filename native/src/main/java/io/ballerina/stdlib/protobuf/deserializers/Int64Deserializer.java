@@ -31,6 +31,9 @@ import io.ballerina.stdlib.protobuf.messages.BMessage;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.GOOGLE_PROTOBUF_DURATION_SECONDS;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.GOOGLE_PROTOBUF_TIMESTAMP_SECONDS;
+
 /**
  * The deserializer class, that deserializes the integer 64 data.
  */

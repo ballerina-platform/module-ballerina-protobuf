@@ -32,10 +32,19 @@ import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
+import io.ballerina.stdlib.protobuf.exceptions.AnnotationUnavailableException;
 import io.ballerina.stdlib.protobuf.messages.BMessage;
 
 import java.io.IOException;
 import java.util.Arrays;
+
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.GOOGLE_PROTOBUF_LIST_VALUE_VALUES;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.GOOGLE_PROTOBUF_STRUCT;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.GOOGLE_PROTOBUF_STRUCT_FIELDS;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.GOOGLE_PROTOBUF_STRUCT_FIELDS_ENTRY_VALUE;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.GOOGLE_PROTOBUF_STRUCT_VALUE_VALUES;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.GOOGLE_PROTOBUF_VALUE_LIST_VALUE;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.GOOGLE_PROTOBUF_VALUE_STRUCT_VALUE;
 
 /**
  * The deserializer class, that deserializes messages.
@@ -50,7 +59,8 @@ public class MessageDeserializer extends AbstractDeserializer {
     }
 
     @Override
-    public void deserialize() throws IOException, Descriptors.DescriptorValidationException {
+    public void deserialize() throws IOException, Descriptors.DescriptorValidationException,
+            AnnotationUnavailableException {
 
         RecordType recordType;
         if (messageType instanceof RecordType) {
@@ -68,7 +78,7 @@ public class MessageDeserializer extends AbstractDeserializer {
         if (isBMap()) {
             BMap<BString, Object> bMap = (BMap<BString, Object>) bMessage.getContent();
             if (fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_STRUCT_FIELDS) ||
-                    fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_STRUCTVALUE_VALUES)) {
+                    fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_STRUCT_VALUE_VALUES)) {
                 Type messageType = TypeCreator.createTupleType(Arrays.asList(PredefinedTypes.TYPE_STRING,
                         PredefinedTypes.TYPE_ANYDATA));
                 BArray tupleVal = (BArray) (readMessage(messageType));
@@ -98,12 +108,12 @@ public class MessageDeserializer extends AbstractDeserializer {
                 Type messageType = recordType.getFields().get(bFieldName.getValue()).getFieldType();
                 bMap.put(bFieldName, readMessage(messageType));
             }
-        } else if (fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_STRUCT_FIELDSENTRY_VALUE)) {
+        } else if (fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_STRUCT_FIELDS_ENTRY_VALUE)) {
             BArray bArray = (BArray) bMessage.getContent();
             bArray.add(1, readMessage(PredefinedTypes.TYPE_ANYDATA));
         } else if (fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_VALUE_LIST_VALUE)) {
             bMessage.setContent(readMessage(PredefinedTypes.TYPE_ANYDATA));
-        } else if (fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_LISTVALUE_VALUES)) {
+        } else if (fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_LIST_VALUE_VALUES)) {
             BArray bArray = (BArray) bMessage.getContent();
             bArray.add(bArray.size(), readMessage(PredefinedTypes.TYPE_ANYDATA));
         } else if (fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_VALUE_STRUCT_VALUE)) {
@@ -114,7 +124,8 @@ public class MessageDeserializer extends AbstractDeserializer {
         }
     }
 
-    private Object readMessage(Type messageType) throws IOException, Descriptors.DescriptorValidationException {
+    private Object readMessage(Type messageType) throws IOException, Descriptors.DescriptorValidationException,
+            AnnotationUnavailableException {
 
         int length = input.readRawVarint32();
         int limit = input.pushLimit(length);

@@ -32,6 +32,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANALOG_GIGA;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.GOOGLE_PROTOBUF_DURATION_NANOS;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.GOOGLE_PROTOBUF_TIMESTAMP_NANOS;
+
 /**
  * The deserializer class, that deserializes the integer 32 data.
  */

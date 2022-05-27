@@ -18,6 +18,8 @@
 
 package io.ballerina.stdlib.protobuf.nativeimpl;
 
+import java.math.BigDecimal;
+
 /**
  * Constants of the protobuf library.
  *
@@ -61,8 +63,28 @@ public class ProtobufConstants {
     public static final String DURATION_TYPE_NAME = "google.protobuf.Duration";
     public static final String STRUCT_TYPE_NAME = "google.protobuf.Struct";
 
+    public static final String GOOGLE_PROTOBUF_STRUCT_FIELDS_ENTRY_KEY = "google.protobuf.Struct.FieldsEntry.key";
+    public static final String GOOGLE_PROTOBUF_ANY_TYPE_URL = "google.protobuf.Any.type_url";
+    public static final String GOOGLE_PROTOBUF_ANY_MESSAGE_NAME = "Any";
+    public static final String GOOGLE_PROTOBUF_TIMESTAMP_SECONDS = "google.protobuf.Timestamp.seconds";
+    public static final String GOOGLE_PROTOBUF_TIMESTAMP_NANOS = "google.protobuf.Timestamp.nanos";
+    public static final String GOOGLE_PROTOBUF_DURATION_SECONDS = "google.protobuf.Duration.seconds";
+    public static final String GOOGLE_PROTOBUF_DURATION_NANOS = "google.protobuf.Duration.nanos";
+    public static final String GOOGLE_PROTOBUF_STRUCT = "google.protobuf.Struct";
+    public static final String GOOGLE_PROTOBUF_STRUCT_FIELDS = "google.protobuf.Struct.fields";
+    public static final String GOOGLE_PROTOBUF_STRUCT_FIELDS_ENTRY_VALUE = "google.protobuf.Struct.FieldsEntry.value";
+    public static final String GOOGLE_PROTOBUF_VALUE_LIST_VALUE = "google.protobuf.Value.list_value";
+    public static final String GOOGLE_PROTOBUF_VALUE_STRUCT_VALUE = "google.protobuf.Value.struct_value";
+    public static final String GOOGLE_PROTOBUF_LIST_VALUE_VALUES = "google.protobuf.ListValue.values";
+    public static final String GOOGLE_PROTOBUF_STRUCT_VALUE_VALUES = "google.protobuf.StructValue.values";
+    public static final String BALLERINA_ANY_VALUE_ENTRY = "value";
+    public static final String BALLERINA_TYPE_URL_ENTRY = "typeUrl";
+    public static final BigDecimal ANALOG_GIGA = new BigDecimal(1000000000);
+
     // Protobuf Any type fields
     public static final String ANY_FIELD_TYPE_URL = "typeUrl";
     public static final String ANY_FIELD_VALUE = "value";
+    public static final String PROTOBUF_DESC_ANNOTATION = "ballerina/protobuf:1:Descriptor";
+    public static final String PROTOBUF_DESC_ANNOTATION_VALUE = "value";
 
 }

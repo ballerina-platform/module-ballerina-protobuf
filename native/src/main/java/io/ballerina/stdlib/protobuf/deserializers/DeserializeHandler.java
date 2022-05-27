@@ -26,24 +26,26 @@ import io.ballerina.runtime.api.PredefinedTypes;
 import io.ballerina.runtime.api.TypeTags;
 import io.ballerina.runtime.api.creators.TypeCreator;
 import io.ballerina.runtime.api.creators.ValueCreator;
-import io.ballerina.runtime.api.types.RecordType;
 import io.ballerina.runtime.api.types.TupleType;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
+import io.ballerina.stdlib.protobuf.exceptions.AnnotationUnavailableException;
 import io.ballerina.stdlib.protobuf.messages.BMessage;
-import io.ballerina.stdlib.protobuf.utils.StandardDescriptorBuilder;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static io.ballerina.stdlib.protobuf.utils.DescriptorBuilder.computeFieldTagValues;
+import static io.ballerina.stdlib.protobuf.utils.DescriptorBuilder.getCodedInputStream;
+import static io.ballerina.stdlib.protobuf.utils.DescriptorBuilder.getMessageDescriptor;
+import static io.ballerina.stdlib.protobuf.utils.Utils.bytesToHex;
 
 /**
  * The deserialize handler class.
@@ -56,7 +58,6 @@ public class DeserializeHandler {
     private final Map<Integer, Descriptors.FieldDescriptor> fieldDescriptors;
     private final Type messageType;
     private final Type targetType;
-    private boolean isAnyTypedMessage = false;
 
     public DeserializeHandler(String descriptor, String hexInput, Type targetType, Type messageType)
             throws Descriptors.DescriptorValidationException, IOException {
@@ -72,7 +73,7 @@ public class DeserializeHandler {
 
     public DeserializeHandler(Descriptors.FieldDescriptor fieldDescriptor, CodedInputStream input, Type targetType,
                               Type messageType)
-            throws IOException {
+            throws IOException, Descriptors.DescriptorValidationException, AnnotationUnavailableException {
 
         this.input = input;
         this.messageDescriptor = getMessageDescriptor(fieldDescriptor, messageType);
@@ -96,89 +97,13 @@ public class DeserializeHandler {
                 messageDescriptor.getFullName()));
     }
 
-    private static CodedInputStream getCodedInputStream(String hexInput) {
-
-        byte[] byteContent = hexStringToByteArray(hexInput);
-        return CodedInputStream.newInstance(byteContent);
-    }
-
-    private Descriptors.Descriptor getMessageDescriptor(String descriptor, String targetTypeName)
-            throws Descriptors.DescriptorValidationException, InvalidProtocolBufferException {
-
-        byte[] descriptorBytes = hexStringToByteArray(descriptor);
-        DescriptorProtos.FileDescriptorProto file = DescriptorProtos.FileDescriptorProto.parseFrom(descriptorBytes);
-        Descriptors.FileDescriptor fileDescriptor = Descriptors.FileDescriptor.buildFrom(file,
-                new Descriptors.FileDescriptor[]{}, true);
-        return fileDescriptor.findMessageTypeByName(targetTypeName);
-    }
-
-    private com.google.protobuf.Descriptors.Descriptor getMessageDescriptor(Descriptors.FieldDescriptor fieldDescriptor,
-                                                                            Type messageType)
-            throws InvalidProtocolBufferException {
-
-        if (fieldDescriptor.getMessageType().getFile().getFullName().endsWith(".placeholder.proto")) {
-            if (fieldDescriptor.getMessageType().getFile().getFullName().startsWith("google.protobuf")) {
-                String messageName = fieldDescriptor.getMessageType().getFile().getFullName()
-                        .replace(".placeholder.proto", "");
-                return getDescriptorForPredefinedTypes(messageName);
-            } else if (messageType instanceof RecordType) {
-                return getDescriptorFromRecord((RecordType) messageType);
-            }
-        }
-        return fieldDescriptor.getMessageType();
-    }
-
-    private com.google.protobuf.Descriptors.Descriptor getDescriptorFromRecord(RecordType recordType)
-            throws InvalidProtocolBufferException {
-
-        if (isDescriptorAnnotationAvailable(recordType)) {
-            BMap<BString, Object> annotations = recordType.getAnnotations();
-            String annotation = annotations.getMapValue(StringUtils.fromString("ballerina/protobuf:1:Descriptor"))
-                    .getStringValue(StringUtils.fromString("value")).getValue();
-            byte[] annotationAsBytes = hexStringToByteArray(annotation);
-            DescriptorProtos.FileDescriptorProto file = DescriptorProtos.FileDescriptorProto
-                    .parseFrom(annotationAsBytes);
-            Descriptors.FileDescriptor fileDescriptor;
-            try {
-                fileDescriptor = Descriptors.FileDescriptor.buildFrom(file, new Descriptors.FileDescriptor[]{},
-                        true);
-                Descriptors.Descriptor desc = fileDescriptor.findMessageTypeByName(recordType.getName());
-                if (desc != null) {
-                    return desc;
-                }
-            } catch (Descriptors.DescriptorValidationException e) {
-                return null;
-            }
-
-        }
-        return null;
-    }
-
-    private boolean isDescriptorAnnotationAvailable(RecordType recordType) {
-
-        return Arrays.stream(recordType.getAnnotations().getKeys()).anyMatch(
-                s -> "ballerina/protobuf:1:Descriptor".equals(s.getValue()));
-    }
-
-    private com.google.protobuf.Descriptors.Descriptor getDescriptorForPredefinedTypes(String messageName) {
-
-        Descriptors.FileDescriptor fileDescriptor = StandardDescriptorBuilder
-                .getFileDescriptorFromMessageName(messageName);
-        return fileDescriptor.findMessageTypeByName(extractMessageNameWithoutNamespace(messageName));
-    }
-
-    private String extractMessageNameWithoutNamespace(String messageName) {
-
-        String[] messageEntries = messageName.split("\\.");
-        return messageEntries[messageEntries.length - 1];
-    }
-
     public Object getBMessage() {
 
         return bMessage.getContent();
     }
 
-    public void deserialize() throws IOException, Descriptors.DescriptorValidationException {
+    public void deserialize() throws IOException, Descriptors.DescriptorValidationException,
+            AnnotationUnavailableException {
 
         while (!(input.isAtEnd())) {
             int tag;
@@ -284,76 +209,6 @@ public class DeserializeHandler {
         input.popLimit(limit);
     }
 
-    public static Map<Integer, Descriptors.FieldDescriptor> computeFieldTagValues(
-            Descriptors.Descriptor messageDescriptor) {
-
-        Map<Integer, Descriptors.FieldDescriptor> fieldDescriptors = new HashMap<>();
-        for (Descriptors.FieldDescriptor fieldDescriptor : messageDescriptor.getFields()) {
-            Descriptors.FieldDescriptor.Type fieldType = fieldDescriptor.getType();
-            int number = fieldDescriptor.getNumber();
-            int byteCode = ((number << 3) + getFieldWireType(fieldType));
-            fieldDescriptors.put(byteCode, fieldDescriptor);
-            if (fieldDescriptor.isRepeated()) {
-                byteCode = ((number << 3) + 2);
-                fieldDescriptors.put(byteCode, fieldDescriptor);
-            }
-
-        }
-        return fieldDescriptors;
-    }
-
-    public static final Map<DescriptorProtos.FieldDescriptorProto.Type, Integer> WIRE_TYPE_MAP;
-
-    static {
-        Map<DescriptorProtos.FieldDescriptorProto.Type, Integer> wireMap = new HashMap<>();
-        wireMap.put(DescriptorProtos.FieldDescriptorProto.Type.TYPE_DOUBLE, 1);
-        wireMap.put(DescriptorProtos.FieldDescriptorProto.Type.TYPE_FLOAT, 5);
-        wireMap.put(DescriptorProtos.FieldDescriptorProto.Type.TYPE_INT32, 0);
-        wireMap.put(DescriptorProtos.FieldDescriptorProto.Type.TYPE_INT64, 0);
-        wireMap.put(DescriptorProtos.FieldDescriptorProto.Type.TYPE_UINT32, 0);
-        wireMap.put(DescriptorProtos.FieldDescriptorProto.Type.TYPE_UINT64, 0);
-        wireMap.put(DescriptorProtos.FieldDescriptorProto.Type.TYPE_SINT32, 0);
-        wireMap.put(DescriptorProtos.FieldDescriptorProto.Type.TYPE_SINT64, 0);
-        wireMap.put(DescriptorProtos.FieldDescriptorProto.Type.TYPE_FIXED32, 5);
-        wireMap.put(DescriptorProtos.FieldDescriptorProto.Type.TYPE_FIXED64, 1);
-        wireMap.put(DescriptorProtos.FieldDescriptorProto.Type.TYPE_SFIXED32, 5);
-        wireMap.put(DescriptorProtos.FieldDescriptorProto.Type.TYPE_SFIXED64, 1);
-        wireMap.put(DescriptorProtos.FieldDescriptorProto.Type.TYPE_BOOL, 0);
-        wireMap.put(DescriptorProtos.FieldDescriptorProto.Type.TYPE_ENUM, 0);
-        wireMap.put(DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING, 2);
-        wireMap.put(DescriptorProtos.FieldDescriptorProto.Type.TYPE_BYTES, 2);
-        WIRE_TYPE_MAP = Collections.unmodifiableMap(wireMap);
-    }
-
-    static int getFieldWireType(Descriptors.FieldDescriptor.Type fieldType) {
-
-        if (fieldType == null) {
-            return -1;
-        }
-        Integer wireType = WIRE_TYPE_MAP.get(fieldType.toProto());
-        if (wireType != null) {
-            return wireType;
-        } else {
-            // Returns embedded messages, packed repeated fields message type, if field type doesn't map with the
-            // predefined proto types.
-            return 2;
-        }
-    }
-
-    static byte[] hexStringToByteArray(String sDescriptor) {
-
-        if (sDescriptor == null) {
-            return new byte[0];
-        }
-        int len = sDescriptor.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(sDescriptor.charAt(i), 16) << 4)
-                    + Character.digit(sDescriptor.charAt(i + 1), 16));
-        }
-        return data;
-    }
-
     Object initBMessage(com.google.protobuf.CodedInputStream input, Map<Integer,
             Descriptors.FieldDescriptor> fieldDescriptors, Type type, String messageName) throws IOException {
 
@@ -361,7 +216,7 @@ public class DeserializeHandler {
         BArray bArray;
         Object bMessage = null;
         if (type != null) {
-            isAnyTypedMessage = "google.protobuf.Any".equals(messageName) &&
+            boolean isAnyTypedMessage = "google.protobuf.Any".equals(messageName) &&
                     fieldDescriptors.values().stream().allMatch(fd -> fd.getFullName().contains("google.protobuf.Any"));
             boolean isTimestampMessage = (type.getTag() == TypeTags.INTERSECTION_TAG ||
                     type.getTag() == TypeTags.TUPLE_TAG) && messageName.equals("google.protobuf.Timestamp");
@@ -413,17 +268,6 @@ public class DeserializeHandler {
         } catch (InvalidProtocolBufferException e) {
             input.getLastTag();
         }
-    }
-
-    public static String bytesToHex(byte[] data) {
-
-        char[] hexChars = new char[data.length * 2];
-        for (int j = 0; j < data.length; j++) {
-            int v = data[j] & 0xFF;
-            hexChars[j * 2] = "0123456789ABCDEF".toCharArray()[v >>> 4];
-            hexChars[j * 2 + 1] = "0123456789ABCDEF".toCharArray()[v & 0x0F];
-        }
-        return new String(hexChars);
     }
 
     private byte[] codeInputStreamAnyTypeByteArray(com.google.protobuf.CodedInputStream input) throws IOException {

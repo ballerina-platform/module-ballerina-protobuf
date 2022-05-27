@@ -22,11 +22,19 @@ package io.ballerina.stdlib.protobuf.messages;
  * The Ballerina message reference class.
  */
 public class BMessage {
-    private Object content = null;
 
-     public BMessage(Object content) {
+    private Object content = null;
+    private int size = 0;
+
+    public BMessage() {
+
+    }
+
+    public BMessage(Object content) {
+
         this.content = content;
     }
+
     public void setContent(Object content) {
 
         this.content = content;
@@ -35,5 +43,20 @@ public class BMessage {
     public Object getContent() {
 
         return content;
+    }
+
+    public void setSize(int size) {
+
+        this.size = size;
+    }
+
+    public int getSize() {
+
+        return size;
+    }
+
+    public void incrementSize(int size) {
+
+        this.size += size;
     }
 }

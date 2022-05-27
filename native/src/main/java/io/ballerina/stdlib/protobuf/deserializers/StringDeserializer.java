@@ -28,6 +28,9 @@ import io.ballerina.stdlib.protobuf.messages.BMessage;
 
 import java.io.IOException;
 
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.GOOGLE_PROTOBUF_ANY_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.GOOGLE_PROTOBUF_STRUCT_FIELDS_ENTRY_KEY;
+
 /**
  * The deserializer class, that deserializes the strings.
  */

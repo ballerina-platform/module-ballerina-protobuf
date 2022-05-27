@@ -22,37 +22,22 @@ import com.google.protobuf.Descriptors;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
+import io.ballerina.stdlib.protobuf.exceptions.AnnotationUnavailableException;
 import io.ballerina.stdlib.protobuf.messages.BMessage;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 
 /**
  * Abstract deserializer class to deserialize the Protobuf messages.
  */
 public abstract class AbstractDeserializer {
 
-    com.google.protobuf.CodedInputStream input;
-    Descriptors.FieldDescriptor fieldDescriptor;
-    BMessage bMessage;
-    Type messageType;
-    Type targetType;
-    boolean isPacked = false;
-
-    protected static final String GOOGLE_PROTOBUF_STRUCT_FIELDS_ENTRY_KEY = "google.protobuf.Struct.FieldsEntry.key";
-    protected static final String GOOGLE_PROTOBUF_ANY_TYPE_URL = "google.protobuf.Any.type_url";
-    protected static final String GOOGLE_PROTOBUF_TIMESTAMP_SECONDS = "google.protobuf.Timestamp.seconds";
-    protected static final String GOOGLE_PROTOBUF_TIMESTAMP_NANOS = "google.protobuf.Timestamp.nanos";
-    protected static final String GOOGLE_PROTOBUF_DURATION_SECONDS = "google.protobuf.Duration.seconds";
-    protected static final String GOOGLE_PROTOBUF_DURATION_NANOS = "google.protobuf.Duration.nanos";
-    protected static final String GOOGLE_PROTOBUF_STRUCT = "google.protobuf.Struct";
-    protected static final String GOOGLE_PROTOBUF_STRUCT_FIELDS = "google.protobuf.Struct.fields";
-    protected static final String GOOGLE_PROTOBUF_STRUCT_FIELDSENTRY_VALUE = "google.protobuf.Struct.FieldsEntry.value";
-    protected static final String GOOGLE_PROTOBUF_VALUE_LIST_VALUE = "google.protobuf.Value.list_value";
-    protected static final String GOOGLE_PROTOBUF_VALUE_STRUCT_VALUE = "google.protobuf.Value.struct_value";
-    protected static final String GOOGLE_PROTOBUF_LISTVALUE_VALUES = "google.protobuf.ListValue.values";
-    protected static final String GOOGLE_PROTOBUF_STRUCTVALUE_VALUES = "google.protobuf.StructValue.values";
-    protected static final BigDecimal ANALOG_GIGA = new BigDecimal(1000000000);
+    protected com.google.protobuf.CodedInputStream input;
+    protected Descriptors.FieldDescriptor fieldDescriptor;
+    protected BMessage bMessage;
+    protected Type messageType;
+    protected Type targetType;
+    protected boolean isPacked = false;
 
     public AbstractDeserializer(com.google.protobuf.CodedInputStream input, Descriptors.FieldDescriptor fieldDescriptor,
                                 BMessage bMessage, Type targetType) {
@@ -93,5 +78,6 @@ public abstract class AbstractDeserializer {
         return bMessage.getContent() instanceof BArray;
     }
 
-    public abstract void deserialize() throws IOException, Descriptors.DescriptorValidationException;
+    public abstract void deserialize() throws IOException, Descriptors.DescriptorValidationException,
+            AnnotationUnavailableException;
 }

@@ -21,7 +21,6 @@ package io.ballerina.stdlib.protobuf.nativeimpl;
 import com.google.protobuf.Descriptors;
 import io.ballerina.runtime.api.TypeTags;
 import io.ballerina.runtime.api.types.RecordType;
-import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
@@ -29,10 +28,10 @@ import io.ballerina.runtime.api.values.BString;
 import io.ballerina.runtime.api.values.BTypedesc;
 import io.ballerina.stdlib.protobuf.deserializers.DeserializeHandler;
 import io.ballerina.stdlib.protobuf.exceptions.AnnotationUnavailableException;
+import io.ballerina.stdlib.protobuf.serializers.SerializeHandler;
 import org.ballerinalang.langlib.value.CloneWithType;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_FIELD_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_FIELD_VALUE;
@@ -50,6 +49,10 @@ import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_STRING_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_UINT32_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_UINT64_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.utils.Utils.deserialize;
+import static io.ballerina.stdlib.protobuf.utils.Utils.getAnnotatedDescriptorFromRecord;
+import static io.ballerina.stdlib.protobuf.utils.Utils.getMessageNameFromTypeUrl;
+import static io.ballerina.stdlib.protobuf.utils.Utils.isMatchingType;
 
 /**
  * This class will hold the native APIs for Ballerina pack and unpack APIs.
@@ -58,16 +61,19 @@ import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_
  */
 public class AnyTypeCreator {
 
-    private static final String PROTOBUF_DESC_ANNOTATION = "ballerina/protobuf:1:Descriptor";
-    private static final String PROTOBUF_DESC_ANNOTATION_VALUE = "value";
-
     private AnyTypeCreator() {
 
     }
-
     public static BString externGetNameFromRecord(BMap<BString, Object> value) {
-
-        return StringUtils.fromString(value.getType().getName());
+        String name = value.getType().getName();
+        if ("map".equals(name)) {
+            return StringUtils.fromString("google.protobuf.Struct");
+        }
+        String packageName = value.getType().getPackage().getName();
+        if ("Any".equals(name) && "protobuf.types.any".equals(packageName)) {
+            return StringUtils.fromString("google.protobuf.Any");
+        }
+        return StringUtils.fromString(name);
     }
 
     public static Object unpack(BMap<BString, Object> value, BTypedesc targetType) {
@@ -128,7 +134,7 @@ public class AnyTypeCreator {
                     default:
                         break;
                 }
-            } catch (IOException | Descriptors.DescriptorValidationException e) {
+            } catch (IOException | Descriptors.DescriptorValidationException | AnnotationUnavailableException e) {
                 return ErrorGenerator.createError(Errors.TypeMismatchError, e.toString());
             }
 
@@ -156,43 +162,47 @@ public class AnyTypeCreator {
         }
     }
 
-    private static String getMessageNameFromTypeUrl(String typeUrl) {
+    public static Object getSerializedString(Object value, BString bTypeUrl) {
 
-        String[] literals = typeUrl.split("\\.");
-        return literals[literals.length - 1];
-    }
-
-    private static Object deserialize(Type targetType, RecordType recordType, String content)
-            throws Descriptors.DescriptorValidationException, IOException, AnnotationUnavailableException {
-
-        if (isDescriptorAnnotationAvailable(recordType)) {
-            String annotation = getProtobufDescAnnotation(recordType);
-            DeserializeHandler m2 = new DeserializeHandler(annotation, content, targetType, recordType);
-            m2.deserialize();
-            return m2.getBMessage();
-        } else {
-            throw new AnnotationUnavailableException("Unavailable annotation for record " + recordType.getName());
+        String typeUrl = bTypeUrl.getValue();
+        Descriptors.Descriptor descriptor = null;
+        try {
+            switch (typeUrl) {
+                case WRAPPER_DOUBLE_TYPE_URL:
+                case WRAPPER_FLOAT_TYPE_URL:
+                case WRAPPER_INT64_TYPE_URL:
+                case WRAPPER_UINT64_TYPE_URL:
+                case WRAPPER_INT32_TYPE_URL:
+                case WRAPPER_UINT32_TYPE_URL:
+                case WRAPPER_BOOL_TYPE_URL:
+                case WRAPPER_STRING_TYPE_URL:
+                case WRAPPER_BYTES_TYPE_URL:
+                    descriptor = com.google.protobuf.WrappersProto.getDescriptor()
+                            .findMessageTypeByName(getMessageNameFromTypeUrl(typeUrl));
+                    break;
+                case EMPTY_TYPE_URL:
+                    return StringUtils.fromString("");
+                case TIMESTAMP_TYPE_URL:
+                    descriptor = com.google.protobuf.Timestamp.getDescriptor();
+                    break;
+                case DURATION_TYPE_URL:
+                    descriptor = com.google.protobuf.Duration.getDescriptor();
+                    break;
+                case STRUCT_TYPE_URL:
+                    descriptor = com.google.protobuf.Struct.getDescriptor();
+                    break;
+                case ANY_TYPE_URL:
+                    descriptor = com.google.protobuf.Any.getDescriptor();
+                    break;
+                default:
+                    descriptor = getAnnotatedDescriptorFromRecord(value);
+                    break;
+            }
+            SerializeHandler serializeHandler = new SerializeHandler(descriptor, value);
+            serializeHandler.serialize();
+            return serializeHandler.getContentAsBString();
+        } catch (IOException | Descriptors.DescriptorValidationException | AnnotationUnavailableException e) {
+            return ErrorGenerator.createError(Errors.TypeMismatchError, e.toString());
         }
-    }
-
-    private static boolean isDescriptorAnnotationAvailable(RecordType recordType) {
-
-        return Arrays.stream(recordType.getAnnotations().getKeys()).anyMatch(
-                s -> PROTOBUF_DESC_ANNOTATION.equals(s.getValue()));
-    }
-
-    private static String getProtobufDescAnnotation(RecordType recordType) {
-
-        BMap<BString, Object> annotations = recordType.getAnnotations();
-        return annotations.getMapValue(StringUtils.fromString(PROTOBUF_DESC_ANNOTATION))
-                .getStringValue(StringUtils.fromString(PROTOBUF_DESC_ANNOTATION_VALUE)).getValue();
-    }
-
-    private static boolean isMatchingType(String typeUrl, int typeTag) {
-
-        if (ModuleUtils.getAnyTypeMap().containsKey(typeUrl)) {
-            return ModuleUtils.getAnyTypeMap().get(typeUrl) == typeTag;
-        }
-        return false;
     }
 }
