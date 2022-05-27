@@ -154,7 +154,10 @@ isolated function testUnpackEnumMessageOneof() returns error? {
 @test:Config {}
 isolated function testUnpackStruct1() returns error? {
 
-    Any a = {typeUrl: "type.googleapis.com/google.protobuf.Struct", value: "0A0E0A044E616D6512061A044A6F686E0A100A0341676512091100000000000038400A0D0A074D61727269656412022000"};
+    Any a = {
+        typeUrl: "type.googleapis.com/google.protobuf.Struct",
+        value: "0A0E0A044E616D6512061A044A6F686E0A100A0341676512091100000000000038400A0D0A074D61727269656412022000"
+    };
     map<anydata> msg = check unpack(a, mapTypeForTest);
     map<anydata> expected = {"Name": "John", "Age": 24.0, "Married": false};
     test:assertEquals(msg, expected);
@@ -163,7 +166,10 @@ isolated function testUnpackStruct1() returns error? {
 @test:Config {}
 isolated function testUnpackStruct2() returns error? {
 
-    Any a = {typeUrl: "type.googleapis.com/google.protobuf.Struct", value: "0A0E0A044E616D6512061A0457534F320A100A034167651209110000000000003840"};
+    Any a = {
+        typeUrl: "type.googleapis.com/google.protobuf.Struct",
+        value: "0A0E0A044E616D6512061A0457534F320A100A034167651209110000000000003840"
+    };
     map<anydata> msg = check unpack(a, mapTypeForTest);
     map<anydata> expected = {"Name": "WSO2", "Age": 24.0};
     test:assertEquals(msg, expected);
@@ -172,7 +178,10 @@ isolated function testUnpackStruct2() returns error? {
 @test:Config {}
 isolated function testUnpackNestedAny() returns error? {
 
-    Any a = {typeUrl: "type.googleapis.com/google.protobuf.Any", value: "0A24747970652E676F6F676C65617069732E636F6D2F416E6E6F74617465644D65737361676512390900000000000025401500002841180A200B280E302D3D7A0000004159010000000000004801520457534F325A0B0A0942616C6C6572696E61"};
+    Any a = {
+        typeUrl: "type.googleapis.com/google.protobuf.Any",
+        value: "0A24747970652E676F6F676C65617069732E636F6D2F416E6E6F74617465644D65737361676512390900000000000025401500002841180A200B280E302D3D7A0000004159010000000000004801520457534F325A0B0A0942616C6C6572696E61"
+    };
     Any msg1 = check unpack(a, Any);
     AnnotatedMessage msg = check unpack(msg1, AnnotatedMessage);
     AnnotatedMessage expected = {

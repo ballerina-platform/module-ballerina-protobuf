@@ -27,7 +27,10 @@ isolated function testUnpackToIncorrectType() returns Error? {
 
 @test:Config {}
 isolated function testUnpackToRecordWithoutAnnotation() returns error? {
-    Any a = {"typeUrl": "type.googleapis.com/MessageWithoutAnnotation", "value": "0900000000000025401500002841180A200B280E302D3D7A0000004159010000000000004801520457534F325A0B0A0942616C6C6572696E61"};
+    Any a = {
+        typeUrl: "type.googleapis.com/MessageWithoutAnnotation",
+        value: "0900000000000025401500002841180A200B280E302D3D7A0000004159010000000000004801520457534F325A0B0A0942616C6C6572696E61"
+    };
     MessageWithoutAnnotation|Error err = unpack(a, MessageWithoutAnnotation);
     test:assertTrue(err is Error);
     test:assertEquals((<Error>err).message(), "Unavailable annotation for record MessageWithoutAnnotation");

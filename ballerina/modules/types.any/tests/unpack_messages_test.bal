@@ -30,8 +30,8 @@ public type Person record {|
 @test:Config {}
 isolated function testPackAndUnpackForNil() returns Error? {
 
-    Any anyNil1 = pack(());
-    Any expectedNil = {typeUrl: "type.googleapis.com/google.protobuf.Empty", value: ()};
+    Any anyNil1 = check pack(());
+    Any expectedNil = {typeUrl: "type.googleapis.com/google.protobuf.Empty", value: ""};
     test:assertEquals(anyNil1, expectedNil);
 
     NilType unpackedNil1 = check unpack(anyNil1, NilType);
@@ -60,10 +60,10 @@ isolated function testGetUrlSuffix() {
 }
 
 @test:Config {}
-isolated function testUnpackError() {
+isolated function testUnpackError() returns error? {
 
     float floatValue = 234f;
-    Any anyFloat = pack(floatValue);
+    Any anyFloat = check pack(floatValue);
     int|Error err = unpack(anyFloat, int);
     if err is Error {
         string expectedErr = "Type type.googleapis.com/google.protobuf.FloatValue cannot unpack to int";
@@ -80,27 +80,8 @@ isolated function testGetNameFromRecord() {
 }
 
 @test:Config {}
-isolated function testAnyRecords() {
-    Any[] anyTypeArr = [
-        pack(<Person>{name: "John", code: 23}),
-        pack("Hello"),
-        pack(10)
-    ];
-    Person person = {name: "John", code: 23};
-    Any anyRecord = pack(person);
-    ContextAny anyContext = {content: anyRecord, headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
-    ContextAnyStream contextAnyStream = {content: anyTypeArr.toStream(), headers: {h1: ["bar", "baz"], h2: ["bar2", "baz2"]}};
-
-    test:assertEquals(anyRecord.typeUrl, "type.googleapis.com/Person");
-    test:assertEquals(anyRecord.value, person);
-    test:assertEquals(anyContext.content, anyRecord);
-    test:assertEquals(anyContext.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
-    test:assertEquals(contextAnyStream.headers, {h1: ["bar", "baz"], h2: ["bar2", "baz2"]});
-}
-
-@test:Config {}
 isolated function testUnpackWithAnnotatedMessage() returns error? {
-    Any a = {"typeUrl": "type.googleapis.com/AnnotatedMessage", "value": "0900000000000025401500002841180A200B280E302D3D7A0000004159010000000000004801520457534F325A0B0A0942616C6C6572696E61"};
+    Any a = {typeUrl: "type.googleapis.com/AnnotatedMessage", value: "0900000000000025401500002841180A200B280E302D3D7A0000004159010000000000004801520457534F325A0B0A0942616C6C6572696E61"};
     AnnotatedMessage msg = check unpack(a, AnnotatedMessage);
     AnnotatedMessage expected = {
         doubleData: 10.5,
@@ -120,7 +101,10 @@ isolated function testUnpackWithAnnotatedMessage() returns error? {
 
 @test:Config {}
 isolated function testUnpackWithAnnotatedRepeatMessageWithPack() returns error? {
-    Any a = {typeUrl: "type.googleapis.com/AnnotatedMessageWithRepeats", value: "0A10000000000000254033333333333325401208000038419A9939411A02090822020B0C2A020C0D32020A0B3A080E0000000F00000042100D0000000000000010000000000000004A0101520457534F325A0B0A0942616C6C6572696E61"};
+    Any a = {
+        typeUrl: "type.googleapis.com/AnnotatedMessageWithRepeats",
+        value: "0A10000000000000254033333333333325401208000038419A9939411A02090822020B0C2A020C0D32020A0B3A080E0000000F00000042100D0000000000000010000000000000004A0101520457534F325A0B0A0942616C6C6572696E61"
+    };
     AnnotatedMessageWithRepeats msg = check unpack(a, AnnotatedMessageWithRepeats);
     AnnotatedMessageWithRepeats expected = {
         doubleData: [10.5, 10.6],
@@ -140,7 +124,10 @@ isolated function testUnpackWithAnnotatedRepeatMessageWithPack() returns error? 
 
 @test:Config {}
 isolated function testUnpackWithAnnotatedRepeatMessageWithoutPack() returns error? {
-    Any a = {typeUrl: "type.googleapis.com/AnnotatedMessageWithRepeats", value: "0900000000000025400933333333333325401500003841159A99394118091808200B200C280C280D300A300B3D0E0000003D0F000000410D000000000000004110000000000000004801520457534F325A0B0A0942616C6C6572696E61"};
+    Any a = {
+        typeUrl: "type.googleapis.com/AnnotatedMessageWithRepeats",
+        value: "0900000000000025400933333333333325401500003841159A99394118091808200B200C280C280D300A300B3D0E0000003D0F000000410D000000000000004110000000000000004801520457534F325A0B0A0942616C6C6572696E61"
+    };
     AnnotatedMessageWithRepeats msg = check unpack(a, AnnotatedMessageWithRepeats);
     AnnotatedMessageWithRepeats expected = {
         doubleData: [10.5, 10.6],
