@@ -11,4 +11,4 @@ distribution = "2201.0.4"
 export = ["protobuf", "protobuf.types.any", "protobuf.types.duration", "protobuf.types.empty", "protobuf.types.struct", "protobuf.types.timestamp", "protobuf.types.wrappers"]
 
 [[platform.java11.dependency]]
-path = "../native/build/libs/protobuf-native-1.2.2-SNAPSHOT.jar"
+path = "../native/build/libs/protobuf-native-1.2.2.jar"
