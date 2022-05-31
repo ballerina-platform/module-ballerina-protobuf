@@ -35,9 +35,14 @@ import java.io.IOException;
 
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_FIELD_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_FIELD_VALUE;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_TYPE_NAME;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.BALLERINA_ANY_VALUE_ENTRY;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.BALLERINA_PROTOBUF_ANY_PACKAGE_NAME;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.DURATION_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.EMPTY_TYPE_URL;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.GOOGLE_PROTOBUF_ANY_MESSAGE_NAME;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.STRUCT_TYPE_NAME;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.STRUCT_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.TIMESTAMP_TYPE_URL;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.WRAPPER_BOOL_TYPE_URL;
@@ -67,11 +72,11 @@ public class AnyTypeCreator {
     public static BString externGetNameFromRecord(BMap<BString, Object> value) {
         String name = value.getType().getName();
         if ("map".equals(name)) {
-            return StringUtils.fromString("google.protobuf.Struct");
+            return StringUtils.fromString(STRUCT_TYPE_NAME);
         }
         String packageName = value.getType().getPackage().getName();
-        if ("Any".equals(name) && "protobuf.types.any".equals(packageName)) {
-            return StringUtils.fromString("google.protobuf.Any");
+        if (GOOGLE_PROTOBUF_ANY_MESSAGE_NAME.equals(name) && BALLERINA_PROTOBUF_ANY_PACKAGE_NAME.equals(packageName)) {
+            return StringUtils.fromString(ANY_TYPE_NAME);
         }
         return StringUtils.fromString(name);
     }
@@ -96,7 +101,7 @@ public class AnyTypeCreator {
                         Descriptors.Descriptor descriptor = com.google.protobuf.WrappersProto.getDescriptor()
                                 .findMessageTypeByName(getMessageNameFromTypeUrl(typeUrl));
                         DeserializeHandler deserializeHandler = new DeserializeHandler(descriptor,
-                                value.getStringValue(StringUtils.fromString("value")).getValue(),
+                                value.getStringValue(StringUtils.fromString(BALLERINA_ANY_VALUE_ENTRY)).getValue(),
                                 targetType.getDescribingType(), null);
                         deserializeHandler.deserialize();
                         return deserializeHandler.getBMessage();
@@ -105,7 +110,7 @@ public class AnyTypeCreator {
                     case TIMESTAMP_TYPE_URL:
                         Descriptors.Descriptor timestampDescriptor = com.google.protobuf.Timestamp.getDescriptor();
                         DeserializeHandler timestampDeserializeHandler = new DeserializeHandler(timestampDescriptor,
-                                value.getStringValue(StringUtils.fromString("value")).getValue(),
+                                value.getStringValue(StringUtils.fromString(BALLERINA_ANY_VALUE_ENTRY)).getValue(),
                                 targetType.getDescribingType(), targetType.getDescribingType());
                         timestampDeserializeHandler.deserialize();
                         BArray utcTime = (BArray) timestampDeserializeHandler.getBMessage();
@@ -114,21 +119,21 @@ public class AnyTypeCreator {
                     case DURATION_TYPE_URL:
                         Descriptors.Descriptor durationDescriptor = com.google.protobuf.Duration.getDescriptor();
                         DeserializeHandler durationDeserializeHandler = new DeserializeHandler(durationDescriptor,
-                                value.getStringValue(StringUtils.fromString("value")).getValue(),
+                                value.getStringValue(StringUtils.fromString(BALLERINA_ANY_VALUE_ENTRY)).getValue(),
                                 targetType.getDescribingType(), targetType.getDescribingType());
                         durationDeserializeHandler.deserialize();
                         return durationDeserializeHandler.getBMessage();
                     case STRUCT_TYPE_URL:
                         Descriptors.Descriptor structDescriptor = com.google.protobuf.Struct.getDescriptor();
                         DeserializeHandler structDeserializeHandler = new DeserializeHandler(structDescriptor,
-                                value.getStringValue(StringUtils.fromString("value")).getValue(),
+                                value.getStringValue(StringUtils.fromString(BALLERINA_ANY_VALUE_ENTRY)).getValue(),
                                 targetType.getDescribingType(), targetType.getDescribingType());
                         structDeserializeHandler.deserialize();
                         return structDeserializeHandler.getBMessage();
                     case ANY_TYPE_URL:
                         Descriptors.Descriptor anyDescriptor = com.google.protobuf.Any.getDescriptor();
                         DeserializeHandler anyDeserializeHandler = new DeserializeHandler(anyDescriptor,
-                                value.getStringValue(StringUtils.fromString("value")).getValue(),
+                                value.getStringValue(StringUtils.fromString(BALLERINA_ANY_VALUE_ENTRY)).getValue(),
                                 targetType.getDescribingType(), targetType.getDescribingType());
                         return anyDeserializeHandler.getBMessage();
                     default:
@@ -140,11 +145,11 @@ public class AnyTypeCreator {
 
         }
         if (expectedTypeTag == TypeTags.RECORD_TYPE_TAG) {
-            if (value.get(StringUtils.fromString("value")) instanceof BString) {
+            if (value.get(StringUtils.fromString(BALLERINA_ANY_VALUE_ENTRY)) instanceof BString) {
                 try {
                     Object data = deserialize(targetType.getDescribingType(),
                             (RecordType) targetType.getDescribingType(),
-                            value.getStringValue(StringUtils.fromString("value")).getValue());
+                            value.getStringValue(StringUtils.fromString(BALLERINA_ANY_VALUE_ENTRY)).getValue());
                     return CloneWithType.cloneWithType(data, targetType);
                 } catch (Descriptors.DescriptorValidationException | IOException e) {
                     return ErrorGenerator.createError(Errors.TypeMismatchError, e.toString());

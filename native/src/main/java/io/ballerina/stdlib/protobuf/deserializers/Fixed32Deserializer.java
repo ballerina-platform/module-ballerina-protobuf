@@ -47,13 +47,13 @@ public class Fixed32Deserializer extends AbstractDeserializer {
         if (isBMap()) {
             BMap<BString, Object> bMap = (BMap<BString, Object>) bMessage.getContent();
             if (fieldDescriptor.isRepeated()) {
-                BArray int32Array = (BArray) bMap.get(bFieldName);
+                BArray fixed32Array = (BArray) bMap.get(bFieldName);
                 if (isPacked) {
                     while (input.getBytesUntilLimit() > 0) {
-                        int32Array.add(int32Array.size(), readContent());
+                        fixed32Array.add(fixed32Array.size(), readContent());
                     }
                 } else {
-                    int32Array.add(int32Array.size(), readContent());
+                    fixed32Array.add(fixed32Array.size(), readContent());
                 }
             } else if (fieldDescriptor.getContainingOneof() != null) {
                 bMap.put(StringUtils.fromString(fieldDescriptor.getName()), readContent());

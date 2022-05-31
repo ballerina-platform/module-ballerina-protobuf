@@ -79,6 +79,7 @@ public class ProtobufConstants {
     public static final String GOOGLE_PROTOBUF_STRUCT_VALUE_VALUES = "google.protobuf.StructValue.values";
     public static final String BALLERINA_ANY_VALUE_ENTRY = "value";
     public static final String BALLERINA_TYPE_URL_ENTRY = "typeUrl";
+    public static final String BALLERINA_PROTOBUF_ANY_PACKAGE_NAME = "protobuf.types.any";
     public static final BigDecimal ANALOG_GIGA = new BigDecimal(1000000000);
 
     // Protobuf Any type fields
