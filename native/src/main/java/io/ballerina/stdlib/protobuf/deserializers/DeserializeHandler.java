@@ -42,6 +42,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.ANY_TYPE_NAME;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.BALLERINA_ANY_VALUE_ENTRY;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.BALLERINA_TYPE_URL_ENTRY;
+import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.TIMESTAMP_TYPE_NAME;
 import static io.ballerina.stdlib.protobuf.utils.DescriptorBuilder.computeFieldTagValues;
 import static io.ballerina.stdlib.protobuf.utils.DescriptorBuilder.getCodedInputStream;
 import static io.ballerina.stdlib.protobuf.utils.DescriptorBuilder.getMessageDescriptor;
@@ -180,7 +184,7 @@ public class DeserializeHandler {
                     break;
                 }
                 default: {
-
+                    continue;
                 }
             }
             if (isPacked) {
@@ -216,10 +220,10 @@ public class DeserializeHandler {
         BArray bArray;
         Object bMessage = null;
         if (type != null) {
-            boolean isAnyTypedMessage = "google.protobuf.Any".equals(messageName) &&
-                    fieldDescriptors.values().stream().allMatch(fd -> fd.getFullName().contains("google.protobuf.Any"));
+            boolean isAnyTypedMessage = ANY_TYPE_NAME.equals(messageName) &&
+                    fieldDescriptors.values().stream().allMatch(fd -> fd.getFullName().contains(ANY_TYPE_NAME));
             boolean isTimestampMessage = (type.getTag() == TypeTags.INTERSECTION_TAG ||
-                    type.getTag() == TypeTags.TUPLE_TAG) && messageName.equals("google.protobuf.Timestamp");
+                    type.getTag() == TypeTags.TUPLE_TAG) && messageName.equals(TIMESTAMP_TYPE_NAME);
             if (type.getTag() == TypeTags.RECORD_TYPE_TAG && !isAnyTypedMessage) {
                 bBMap = ValueCreator.createRecordValue(type.getPackage(), type.getName());
                 bMessage = bBMap;
@@ -250,8 +254,8 @@ public class DeserializeHandler {
                     String s = bytesToHex(codeInputStreamAnyTypeByteArray(input));
                     bMessage = StringUtils.fromString(s);
                     BMap<BString, Object> anyMap = ValueCreator.createRecordValue(type.getPackage(), type.getName());
-                    anyMap.put(StringUtils.fromString("typeUrl"), StringUtils.fromString(typeUrl));
-                    anyMap.put(StringUtils.fromString("value"), bMessage);
+                    anyMap.put(StringUtils.fromString(BALLERINA_TYPE_URL_ENTRY), StringUtils.fromString(typeUrl));
+                    anyMap.put(StringUtils.fromString(BALLERINA_ANY_VALUE_ENTRY), bMessage);
                     bMessage = anyMap;
                     return bMessage;
                 }
