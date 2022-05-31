@@ -60,7 +60,7 @@ public type ContextAnyStream record {|
 # Generate and return the generic `'any:Any` record that is used to represent protobuf `Any` type.
 #
 # + message - The record or the scalar value to be packed as Any type
-# + return - Any value representation of the given message
+# + return - Any value representation of the given message or an error
 public isolated function pack(ValueType message) returns Any|Error {
     string urlPrefix = "type.googleapis.com/";
     string typeUrl = urlPrefix + getUrlSuffixFromValue(message);
