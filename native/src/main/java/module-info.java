@@ -19,5 +19,10 @@
 module io.ballerina.stdlib.protobuf {
     requires io.ballerina.runtime;
     requires io.ballerina.lang.value;
+    requires com.google.protobuf;
     exports io.ballerina.stdlib.protobuf.nativeimpl;
+    exports io.ballerina.stdlib.protobuf.deserializers;
+    exports io.ballerina.stdlib.protobuf.messages;
+    exports io.ballerina.stdlib.protobuf.utils;
+    exports io.ballerina.stdlib.protobuf.exceptions;
 }

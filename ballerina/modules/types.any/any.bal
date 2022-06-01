@@ -19,7 +19,7 @@ import ballerina/time;
 import ballerina/protobuf;
 
 # Subtypes that are allowed as Any type.
-public type ValueType int|float|string|boolean|time:Utc|time:Seconds|record {}|()|byte[];
+public type ValueType int|float|string|boolean|time:Utc|time:Seconds|record {}|()|byte[]|map<anydata>;
 
 # Type descriptor of ValueType.
 public type ValueTypeDesc typedesc<ValueType>;
@@ -60,11 +60,11 @@ public type ContextAnyStream record {|
 # Generate and return the generic `'any:Any` record that is used to represent protobuf `Any` type.
 #
 # + message - The record or the scalar value to be packed as Any type
-# + return - Any value representation of the given message
-public isolated function pack(ValueType message) returns Any {
-    string urlPrefix = "type.googleapis.com/";
-    string typeUrl = urlPrefix + getUrlSuffixFromValue(message);
-    return {typeUrl: typeUrl, value: message};
+# + return - Any value representation of the given message or an error
+public isolated function pack(ValueType message) returns Any|Error {
+    string typeUrl = "type.googleapis.com/" + getUrlSuffixFromValue(message);
+    string content = check getSerializedString(message, typeUrl);
+    return {typeUrl: typeUrl, value: content};
 }
 
 # Unpack and return the specified Ballerina value
@@ -73,6 +73,10 @@ public isolated function pack(ValueType message) returns Any {
 # + targetTypeOfAny - Type descriptor of the return value
 # + return - Return a value of the given type
 public isolated function unpack(Any anyValue, ValueTypeDesc targetTypeOfAny = <>) returns targetTypeOfAny|Error = @java:Method {
+    'class: "io.ballerina.stdlib.protobuf.nativeimpl.AnyTypeCreator"
+} external;
+
+isolated function getSerializedString(ValueType message, string typeUrl) returns string|Error = @java:Method {
     'class: "io.ballerina.stdlib.protobuf.nativeimpl.AnyTypeCreator"
 } external;
 
@@ -100,7 +104,7 @@ isolated function getUrlSuffixFromValue(ValueType anyMessage) returns string {
     } else if anyMessage is record {||} {
         return "google.protobuf.Empty";
     } else {
-        return externGetNameFromRecord(<record {}> anyMessage);
+        return externGetNameFromRecord(<record {}>anyMessage);
     }
 }
 
