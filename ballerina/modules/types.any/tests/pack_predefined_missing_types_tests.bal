@@ -19,39 +19,31 @@ import ballerina/test;
 @test:Config {}
 isolated function testPackDouble() returns Error? {
 
-    string typeUrl = "type.googleapis.com/google.protobuf.DoubleValue";
-    float value = 10.5f;
-    string content = check getSerializedString(value, typeUrl);
-    string expected = "090000000000002540";
-    test:assertEquals(content, expected);
+    string content = check getSerializedString(10.5f,
+    "type.googleapis.com/google.protobuf.DoubleValue");
+    test:assertEquals(content, "090000000000002540");
 }
 
 @test:Config {}
 isolated function testPackInt32() returns Error? {
 
-    string typeUrl = "type.googleapis.com/google.protobuf.Int32Value";
-    int value = 11;
-    string content = check getSerializedString(value, typeUrl);
-    string expected = "080B";
-    test:assertEquals(content, expected);
+    string content = check getSerializedString(11,
+    "type.googleapis.com/google.protobuf.Int32Value");
+    test:assertEquals(content, "080B");
 }
 
 @test:Config {}
 isolated function testPackUInt32() returns Error? {
 
-    string typeUrl = "type.googleapis.com/google.protobuf.UInt32Value";
-    int value = 11;
-    string content = check getSerializedString(value, typeUrl);
-    string expected = "080B";
-    test:assertEquals(content, expected);
+    string content = check getSerializedString(11,
+    "type.googleapis.com/google.protobuf.UInt32Value");
+    test:assertEquals(content, "080B");
 }
 
 @test:Config {}
 isolated function testPackUInt64() returns Error? {
 
-    string typeUrl = "type.googleapis.com/google.protobuf.UInt64Value";
-    int value = 10;
-    string content = check getSerializedString(value, typeUrl);
-    string expected = "080A";
-    test:assertEquals(content, expected);
+    string content = check getSerializedString(10,
+    "type.googleapis.com/google.protobuf.UInt64Value");
+    test:assertEquals(content, "080A");
 }
