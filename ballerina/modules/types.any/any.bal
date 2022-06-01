@@ -62,8 +62,7 @@ public type ContextAnyStream record {|
 # + message - The record or the scalar value to be packed as Any type
 # + return - Any value representation of the given message or an error
 public isolated function pack(ValueType message) returns Any|Error {
-    string urlPrefix = "type.googleapis.com/";
-    string typeUrl = urlPrefix + getUrlSuffixFromValue(message);
+    string typeUrl = "type.googleapis.com/" + getUrlSuffixFromValue(message);
     string content = check getSerializedString(message, typeUrl);
     return {typeUrl: typeUrl, value: content};
 }
