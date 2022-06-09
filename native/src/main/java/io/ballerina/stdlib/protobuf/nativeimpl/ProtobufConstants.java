@@ -85,7 +85,6 @@ public class ProtobufConstants {
     // Protobuf Any type fields
     public static final String ANY_FIELD_TYPE_URL = "typeUrl";
     public static final String ANY_FIELD_VALUE = "value";
-    public static final String PROTOBUF_DESC_ANNOTATION = "ballerina/protobuf:1:Descriptor";
     public static final String PROTOBUF_DESC_ANNOTATION_VALUE = "value";
 
 }
