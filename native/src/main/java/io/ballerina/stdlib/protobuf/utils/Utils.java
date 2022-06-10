@@ -32,7 +32,6 @@ import io.ballerina.stdlib.protobuf.nativeimpl.ModuleUtils;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.PROTOBUF_DESC_ANNOTATION;
 import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.PROTOBUF_DESC_ANNOTATION_VALUE;
 import static io.ballerina.stdlib.protobuf.utils.DescriptorBuilder.getDescriptorFromRecord;
 
@@ -98,7 +97,7 @@ public class Utils {
     public static boolean isDescriptorAnnotationAvailable(RecordType recordType) {
 
         return Arrays.stream(recordType.getAnnotations().getKeys()).anyMatch(
-                s -> PROTOBUF_DESC_ANNOTATION.equals(s.getValue()));
+                s -> isValidProtoAnnotation(s.getValue()));
     }
 
     @SuppressWarnings("unchecked")
@@ -117,8 +116,7 @@ public class Utils {
     public static String getProtobufDescAnnotation(RecordType recordType) {
 
         BMap<BString, Object> annotations = recordType.getAnnotations();
-        return annotations.getMapValue(StringUtils.fromString(PROTOBUF_DESC_ANNOTATION))
-                .getStringValue(StringUtils.fromString(PROTOBUF_DESC_ANNOTATION_VALUE)).getValue();
+        return filterDescAnnotation(annotations);
     }
 
     public static boolean isMatchingType(String typeUrl, int typeTag) {
@@ -127,5 +125,20 @@ public class Utils {
             return ModuleUtils.getAnyTypeMap().get(typeUrl) == typeTag;
         }
         return false;
+    }
+
+    public static String filterDescAnnotation(BMap<BString, Object> annotations) {
+        for (BString annotationName : annotations.getKeys()) {
+            if (isValidProtoAnnotation(annotationName.getValue())) {
+                return annotations.getMapValue(annotationName)
+                        .getStringValue(StringUtils.fromString(PROTOBUF_DESC_ANNOTATION_VALUE)).getValue();
+            }
+        }
+        return "";
+    }
+
+    public static boolean isValidProtoAnnotation(String annotationName) {
+        return annotationName.contains("ballerina") && annotationName.contains("protobuf") &&
+                annotationName.contains("Descriptor");
     }
 }

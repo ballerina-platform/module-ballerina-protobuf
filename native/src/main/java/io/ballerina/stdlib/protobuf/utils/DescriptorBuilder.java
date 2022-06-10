@@ -24,20 +24,18 @@ import com.google.protobuf.Descriptors;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.ballerina.runtime.api.types.RecordType;
 import io.ballerina.runtime.api.types.Type;
-import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.stdlib.protobuf.exceptions.AnnotationUnavailableException;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.PROTOBUF_DESC_ANNOTATION;
-import static io.ballerina.stdlib.protobuf.nativeimpl.ProtobufConstants.PROTOBUF_DESC_ANNOTATION_VALUE;
 import static io.ballerina.stdlib.protobuf.utils.StandardDescriptorBuilder.findGoogleDescriptorFromName;
 import static io.ballerina.stdlib.protobuf.utils.StandardDescriptorBuilder.getFieldWireType;
+import static io.ballerina.stdlib.protobuf.utils.Utils.filterDescAnnotation;
 import static io.ballerina.stdlib.protobuf.utils.Utils.hexToBytes;
+import static io.ballerina.stdlib.protobuf.utils.Utils.isDescriptorAnnotationAvailable;
 
 /**
  * Provides protobuf descriptor for well known dependency.
@@ -95,20 +93,13 @@ public class DescriptorBuilder {
                 recordType.getName());
     }
 
-    public static boolean isDescriptorAnnotationAvailable(RecordType recordType) {
-
-        return Arrays.stream(recordType.getAnnotations().getKeys()).anyMatch(
-                s -> PROTOBUF_DESC_ANNOTATION.equals(s.getValue()));
-    }
-
     public static com.google.protobuf.Descriptors.Descriptor getDescriptorFromRecord(RecordType recordType)
             throws InvalidProtocolBufferException, Descriptors.DescriptorValidationException,
             AnnotationUnavailableException {
 
         if (isDescriptorAnnotationAvailable(recordType)) {
             BMap<BString, Object> annotations = recordType.getAnnotations();
-            String annotation = annotations.getMapValue(StringUtils.fromString(PROTOBUF_DESC_ANNOTATION))
-                    .getStringValue(StringUtils.fromString(PROTOBUF_DESC_ANNOTATION_VALUE)).getValue();
+            String annotation = filterDescAnnotation(annotations);
             byte[] annotationAsBytes = hexToBytes(annotation);
             DescriptorProtos.FileDescriptorProto file = DescriptorProtos.FileDescriptorProto.parseFrom(
                     annotationAsBytes);
