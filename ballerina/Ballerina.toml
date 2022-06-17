@@ -14,4 +14,4 @@ export = ["protobuf", "protobuf.types.any", "protobuf.types.duration", "protobuf
 path = "../native/build/libs/protobuf-native-1.2.3-SNAPSHOT.jar"
 
 [[platform.java11.dependency]]
-path = "./lib/protobuf-java-3.19.2.jar"
+path = "./lib/protobuf-java-3.20.1.jar"
