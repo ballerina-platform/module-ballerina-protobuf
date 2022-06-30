@@ -29,6 +29,7 @@ import io.ballerina.runtime.api.types.RecordType;
 import io.ballerina.runtime.api.types.TupleType;
 import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
+import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.values.BArray;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
@@ -87,7 +88,8 @@ public class MessageDeserializer extends AbstractDeserializer {
             } else if (fieldDescriptor.isRepeated() && recordType != null) {
                 BArray valueArray = bMap.get(bFieldName) != null ?
                         (BArray) bMap.get(bFieldName) : null;
-                Type fieldType = recordType.getFields().get(bFieldName.getValue()).getFieldType();
+                Type fieldType = TypeUtils.getReferredType(recordType.getFields().get(bFieldName.getValue()).
+                        getFieldType());
                 if (valueArray == null || valueArray.size() == 0) {
                     valueArray = ValueCreator.createArrayValue((ArrayType) fieldType);
                     bMap.put(bFieldName, valueArray);
@@ -95,7 +97,8 @@ public class MessageDeserializer extends AbstractDeserializer {
                 valueArray.add(valueArray.size(), readMessage(((ArrayType) fieldType).getElementType()));
                 bMessage.setContent(bMap);
             } else if (fieldDescriptor.getContainingOneof() != null && recordType != null) {
-                Type messageType = recordType.getFields().get(bFieldName.getValue()).getFieldType();
+                Type messageType = TypeUtils.getReferredType(recordType.getFields().get(bFieldName.getValue()).
+                        getFieldType());
                 Object bValue = readMessage(messageType);
                 bMap.put(StringUtils.fromString(fieldDescriptor.getName()), bValue);
                 bMessage.setContent(bMap);
@@ -105,7 +108,8 @@ public class MessageDeserializer extends AbstractDeserializer {
                 bMap.put(bFieldName, readMessage(messageType));
                 bMessage.setContent(bMap);
             } else if (recordType != null) {
-                Type messageType = recordType.getFields().get(bFieldName.getValue()).getFieldType();
+                Type messageType = TypeUtils.getReferredType(recordType.getFields().get(bFieldName.getValue()).
+                        getFieldType());
                 bMap.put(bFieldName, readMessage(messageType));
             }
         } else if (fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_STRUCT_FIELDS_ENTRY_VALUE)) {
@@ -119,7 +123,8 @@ public class MessageDeserializer extends AbstractDeserializer {
         } else if (fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_VALUE_STRUCT_VALUE)) {
             bMessage.setContent(readMessage(PredefinedTypes.TYPE_ANYDATA));
         } else if (recordType != null) {
-            Type messageType = recordType.getFields().get(bFieldName.getValue()).getFieldType();
+            Type messageType = TypeUtils.getReferredType(recordType.getFields().get(bFieldName.getValue()).
+                    getFieldType());
             bMessage.setContent(readMessage(messageType));
         }
     }
