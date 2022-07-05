@@ -94,7 +94,8 @@ public class MessageDeserializer extends AbstractDeserializer {
                     valueArray = ValueCreator.createArrayValue((ArrayType) fieldType);
                     bMap.put(bFieldName, valueArray);
                 }
-                valueArray.add(valueArray.size(), readMessage(((ArrayType) fieldType).getElementType()));
+                valueArray.add(valueArray.size(),
+                        readMessage(TypeUtils.getReferredType(((ArrayType) fieldType).getElementType())));
                 bMessage.setContent(bMap);
             } else if (fieldDescriptor.getContainingOneof() != null && recordType != null) {
                 Type messageType = TypeUtils.getReferredType(recordType.getFields().get(bFieldName.getValue()).
