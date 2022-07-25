@@ -11,6 +11,9 @@ distribution = "2201.2.0"
 export = ["protobuf", "protobuf.types.any", "protobuf.types.duration", "protobuf.types.empty", "protobuf.types.struct", "protobuf.types.timestamp", "protobuf.types.wrappers"]
 
 [[platform.java11.dependency]]
+groupId = "io.ballerina.stdlib"
+artifactId = "protobuf-native"
+version = "1.3.0"
 path = "../native/build/libs/protobuf-native-1.3.0-SNAPSHOT.jar"
 
 [[platform.java11.dependency]]
