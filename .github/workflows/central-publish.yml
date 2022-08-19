@@ -30,6 +30,24 @@ jobs:
           format: 'table'
           exit-code: '1'
       - name: Publish artifact
+      - name: Build with Gradle
+        env:
+          packageUser: ${{ github.actor }}
+          packagePAT: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew build -x check -x test
+      - name: Create lib directory if not exists
+        run: mkdir -p ballerina/lib
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'rootfs'
+          scan-ref: '/github/workspace/ballerina/lib'
+          format: 'table'
+          timeout: '10m0s'
+          exit-code: '1'
+
+      - name: Ballerina Central Push
+        if: ${{ github.event.inputs.environment == 'CENTRAL' }}
         env:
           BALLERINA_CENTRAL_ACCESS_TOKEN: ${{ secrets.BALLERINA_CENTRAL_ACCESS_TOKEN }}
           packageUser: ${{ secrets.BALLERINA_BOT_USERNAME }}
