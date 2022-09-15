@@ -14,7 +14,7 @@ export = ["protobuf", "protobuf.types.any", "protobuf.types.duration", "protobuf
 groupId = "io.ballerina.stdlib"
 artifactId = "protobuf-native"
 version = "1.3.0"
-path = "../native/build/libs/protobuf-native-1.3.0-SNAPSHOT.jar"
+path = "../native/build/libs/protobuf-native-1.3.0.jar"
 
 [[platform.java11.dependency]]
 path = "./lib/protobuf-java-3.20.1.jar"
