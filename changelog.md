@@ -3,8 +3,24 @@ This file contains all the notable changes done to the Ballerina Protobuf packag
 
 ## [Unreleased]
 
-### Updated
+### Changed
+- [API docs updated](https://github.com/ballerina-platform/ballerina-standard-library/issues/3463)
+
+## [1.3.1] - 2022-10-06
+
+### Changed
+- [Update protobuf-java version to fix protobuf vulnerability](https://github.com/ballerina-platform/ballerina-standard-library/issues/3493)
+
+## [1.3.0] - 2022-07-19
+
+### Changed
+- [Update Ballerina lang version](https://github.com/ballerina-platform/module-ballerina-protobuf/pull/184)
+
+### Added
 - [Add serializers and improve deserialize logic](https://github.com/ballerina-platform/ballerina-standard-library/issues/2901)
+
+## [1.2.0] - 2021-12-17
+- [Update the versions of standard library modules for Swan Lake GA](https://github.com/ballerina-platform/ballerina-standard-library/issues/2503)
 
 ## [1.1.0] - 2021-12-13
 
