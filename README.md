@@ -2,10 +2,11 @@ Ballerina Protobuf Library
 ===================
 
 [![Build](https://github.com/ballerina-platform/module-ballerina-protobuf/actions/workflows/build-timestamped-master.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-protobuf/actions/workflows/build-timestamped-master.yml)
+[![codecov](https://codecov.io/gh/ballerina-platform/module-ballerina-protobuf/branch/main/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerina-protobuf)
 [![Trivy](https://github.com/ballerina-platform/module-ballerina-protobuf/actions/workflows/trivy-scan.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-protobuf/actions/workflows/trivy-scan.yml)
+[![GraalVM Check](https://img.shields.io/github/workflow/status/ballerina-platform/module-ballerina-protobuf/Build%20with%20bal%20test%20native?label=GraalVM%20Check)](https://github.com/ballerina-platform/module-ballerina-protobuf/actions/workflows/build-with-bal-test-native.yml)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerina-protobuf.svg)](https://github.com/ballerina-platform/module-ballerina-protobuf/commits/main)
 [![Github issues](https://img.shields.io/github/issues/ballerina-platform/ballerina-standard-library/module/protobuf.svg?label=Open%20Issues)](https://github.com/ballerina-platform/ballerina-standard-library/labels/module%2Fprotobuf)
-[![codecov](https://codecov.io/gh/ballerina-platform/module-ballerina-protobuf/branch/main/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerina-protobuf)
 
 This library provides APIs to represent a set of pre-defined protobuf types.
 
