@@ -1,4 +1,4 @@
-Ballerina Protobuf Library
+Ballerina Protobuf Librar
 ===================
 
 [![Build](https://github.com/ballerina-platform/module-ballerina-protobuf/actions/workflows/build-timestamped-master.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerina-protobuf/actions/workflows/build-timestamped-master.yml)
