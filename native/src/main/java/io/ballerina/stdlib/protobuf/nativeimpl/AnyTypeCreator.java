@@ -21,16 +21,18 @@ package io.ballerina.stdlib.protobuf.nativeimpl;
 import com.google.protobuf.Descriptors;
 import io.ballerina.runtime.api.TypeTags;
 import io.ballerina.runtime.api.types.RecordType;
+import io.ballerina.runtime.api.types.Type;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.utils.TypeUtils;
+import io.ballerina.runtime.api.utils.ValueUtils;
 import io.ballerina.runtime.api.values.BArray;
+import io.ballerina.runtime.api.values.BError;
 import io.ballerina.runtime.api.values.BMap;
 import io.ballerina.runtime.api.values.BString;
 import io.ballerina.runtime.api.values.BTypedesc;
 import io.ballerina.stdlib.protobuf.deserializers.DeserializeHandler;
 import io.ballerina.stdlib.protobuf.exceptions.AnnotationUnavailableException;
 import io.ballerina.stdlib.protobuf.serializers.SerializeHandler;
-import org.ballerinalang.langlib.value.CloneWithType;
 
 import java.io.IOException;
 
@@ -84,9 +86,9 @@ public class AnyTypeCreator {
         return StringUtils.fromString(name);
     }
 
-    public static Object unpack(BMap<BString, Object> value, BTypedesc targetType) {
-
-        int expectedTypeTag = TypeUtils.getReferredType(targetType.getDescribingType()).getTag();
+    public static Object unpack(BMap<BString, Object> value, BTypedesc targetTypeDesc) {
+        Type targetType = targetTypeDesc.getDescribingType();
+        int expectedTypeTag = TypeUtils.getReferredType(targetType).getTag();
         String typeUrl = value.getStringValue(StringUtils.fromString(ANY_FIELD_TYPE_URL)).getValue();
 
         if (isMatchingType(typeUrl, expectedTypeTag)) {
@@ -105,7 +107,7 @@ public class AnyTypeCreator {
                                 .findMessageTypeByName(getMessageNameFromTypeUrl(typeUrl));
                         DeserializeHandler deserializeHandler = new DeserializeHandler(descriptor,
                                 value.getStringValue(StringUtils.fromString(BALLERINA_ANY_VALUE_ENTRY)).getValue(),
-                                TypeUtils.getReferredType(targetType.getDescribingType()), null);
+                                TypeUtils.getReferredType(targetType), null);
                         deserializeHandler.deserialize();
                         return deserializeHandler.getBMessage();
                     case EMPTY_TYPE_URL:
@@ -114,8 +116,8 @@ public class AnyTypeCreator {
                         Descriptors.Descriptor timestampDescriptor = com.google.protobuf.Timestamp.getDescriptor();
                         DeserializeHandler timestampDeserializeHandler = new DeserializeHandler(timestampDescriptor,
                                 value.getStringValue(StringUtils.fromString(BALLERINA_ANY_VALUE_ENTRY)).getValue(),
-                                TypeUtils.getReferredType(targetType.getDescribingType()),
-                                TypeUtils.getReferredType(targetType.getDescribingType()));
+                                TypeUtils.getReferredType(targetType),
+                                TypeUtils.getReferredType(targetType));
                         timestampDeserializeHandler.deserialize();
                         BArray utcTime = (BArray) timestampDeserializeHandler.getBMessage();
                         utcTime.freezeDirect();
@@ -124,24 +126,24 @@ public class AnyTypeCreator {
                         Descriptors.Descriptor durationDescriptor = com.google.protobuf.Duration.getDescriptor();
                         DeserializeHandler durationDeserializeHandler = new DeserializeHandler(durationDescriptor,
                                 value.getStringValue(StringUtils.fromString(BALLERINA_ANY_VALUE_ENTRY)).getValue(),
-                                TypeUtils.getReferredType(targetType.getDescribingType()),
-                                TypeUtils.getReferredType(targetType.getDescribingType()));
+                                TypeUtils.getReferredType(targetType),
+                                TypeUtils.getReferredType(targetType));
                         durationDeserializeHandler.deserialize();
                         return durationDeserializeHandler.getBMessage();
                     case STRUCT_TYPE_URL:
                         Descriptors.Descriptor structDescriptor = com.google.protobuf.Struct.getDescriptor();
                         DeserializeHandler structDeserializeHandler = new DeserializeHandler(structDescriptor,
                                 value.getStringValue(StringUtils.fromString(BALLERINA_ANY_VALUE_ENTRY)).getValue(),
-                                TypeUtils.getReferredType(targetType.getDescribingType()),
-                                TypeUtils.getReferredType(targetType.getDescribingType()));
+                                TypeUtils.getReferredType(targetType),
+                                TypeUtils.getReferredType(targetType));
                         structDeserializeHandler.deserialize();
                         return structDeserializeHandler.getBMessage();
                     case ANY_TYPE_URL:
                         Descriptors.Descriptor anyDescriptor = com.google.protobuf.Any.getDescriptor();
                         DeserializeHandler anyDeserializeHandler = new DeserializeHandler(anyDescriptor,
                                 value.getStringValue(StringUtils.fromString(BALLERINA_ANY_VALUE_ENTRY)).getValue(),
-                                TypeUtils.getReferredType(targetType.getDescribingType()),
-                                TypeUtils.getReferredType(targetType.getDescribingType()));
+                                TypeUtils.getReferredType(targetType),
+                                TypeUtils.getReferredType(targetType));
                         return anyDeserializeHandler.getBMessage();
                     default:
                         break;
@@ -154,23 +156,31 @@ public class AnyTypeCreator {
         if (expectedTypeTag == TypeTags.RECORD_TYPE_TAG) {
             if (value.get(StringUtils.fromString(BALLERINA_ANY_VALUE_ENTRY)) instanceof BString) {
                 try {
-                    Object data = deserialize(TypeUtils.getReferredType(targetType.getDescribingType()),
-                            (RecordType) TypeUtils.getReferredType(targetType.getDescribingType()),
+                    Object data = deserialize(TypeUtils.getReferredType(targetType),
+                            (RecordType) TypeUtils.getReferredType(targetType),
                             value.getStringValue(StringUtils.fromString(BALLERINA_ANY_VALUE_ENTRY)).getValue());
-                    return CloneWithType.cloneWithType(data, targetType);
+                    return cloneWithType(data, targetType);
                 } catch (Descriptors.DescriptorValidationException | IOException e) {
                     return ErrorGenerator.createError(Errors.TypeMismatchError, e.toString());
                 } catch (AnnotationUnavailableException e) {
                     return ErrorGenerator.createError(Errors.TypeMismatchError, e.getMessage());
                 }
             } else {
-                return CloneWithType.cloneWithType(value.getMapValue(StringUtils.fromString(ANY_FIELD_VALUE)),
+                return cloneWithType(value.getMapValue(StringUtils.fromString(ANY_FIELD_VALUE)),
                         targetType);
             }
         } else {
             String errorMessage = "Type " + typeUrl + " cannot unpack to " +
-                    TypeUtils.getReferredType(targetType.getDescribingType()).getName();
+                    TypeUtils.getReferredType(targetType).getName();
             return ErrorGenerator.createError(Errors.TypeMismatchError, errorMessage);
+        }
+    }
+
+    private static Object cloneWithType(Object value, Type targetType) {
+        try {
+            return ValueUtils.convert(value, targetType);
+        } catch (BError e) {
+            return e;
         }
     }
 
