@@ -1,7 +1,7 @@
 [package]
 org = "ballerina"
 name = "protobuf"
-version = "1.6.1"
+version = "1.6.2"
 authors = ["Ballerina"]
 keywords = ["wrappers"]
 repository = "https://github.com/ballerina-platform/module-ballerina-protobuf"
@@ -16,8 +16,11 @@ graalvmCompatible = true
 [[platform.java17.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "protobuf-native"
-version = "1.6.1"
-path = "../native/build/libs/protobuf-native-1.6.1.jar"
+version = "1.6.2"
+path = "../native/build/libs/protobuf-native-1.6.2-SNAPSHOT.jar"
 
 [[platform.java17.dependency]]
+groupId = "com.google.protobuf"
+artifactId = "protobuf-java"
+version = "3.25.5"
 path = "./lib/protobuf-java-3.25.5.jar"

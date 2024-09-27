@@ -20,4 +20,7 @@ version = "@toml.version@"
 path = "../native/build/libs/protobuf-native-@project.version@.jar"
 
 [[platform.java17.dependency]]
+groupId = "com.google.protobuf"
+artifactId = "protobuf-java"
+version = "@protobuf.java.version@"
 path = "./lib/protobuf-java-@protobuf.java.version@.jar"
