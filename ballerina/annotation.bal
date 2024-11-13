@@ -14,9 +14,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/jballerina.java;
+
 # The record definition for the Descriptor annotation
 #
 # + value - The descriptor value as a hexadecimal string
+@java:ExternalDependency
 public type MessageDescriptor record {|
     string value;
 |};
