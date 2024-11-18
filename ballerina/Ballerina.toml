@@ -10,16 +10,16 @@ license = ["Apache-2.0"]
 distribution = "2201.11.0"
 export = ["protobuf", "protobuf.types.any", "protobuf.types.duration", "protobuf.types.empty", "protobuf.types.struct", "protobuf.types.timestamp", "protobuf.types.wrappers"]
 
-[platform.java17]
+[platform.java21]
 graalvmCompatible = true
 
-[[platform.java17.dependency]]
+[[platform.java21.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "protobuf-native"
 version = "1.7.0"
 path = "../native/build/libs/protobuf-native-1.7.0-SNAPSHOT.jar"
 
-[[platform.java17.dependency]]
+[[platform.java21.dependency]]
 groupId = "com.google.protobuf"
 artifactId = "protobuf-java"
 version = "3.25.5"
