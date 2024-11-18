@@ -19,9 +19,9 @@
 package io.ballerina.stdlib.protobuf.nativeimpl;
 
 import com.google.protobuf.Descriptors;
-import io.ballerina.runtime.api.TypeTags;
 import io.ballerina.runtime.api.types.RecordType;
 import io.ballerina.runtime.api.types.Type;
+import io.ballerina.runtime.api.types.TypeTags;
 import io.ballerina.runtime.api.utils.StringUtils;
 import io.ballerina.runtime.api.utils.TypeUtils;
 import io.ballerina.runtime.api.utils.ValueUtils;
