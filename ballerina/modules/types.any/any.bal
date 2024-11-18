@@ -28,6 +28,7 @@ public type ValueTypeDesc typedesc<ValueType>;
 public type Error distinct protobuf:Error;
 
 # Type mismatch error that returns when a user specifies an incorrect type.
+@java:ExternalDependency
 public type TypeMismatchError distinct Error;
 
 # Represent protobuf `Any` type.

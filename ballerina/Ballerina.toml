@@ -1,13 +1,13 @@
 [package]
 org = "ballerina"
 name = "protobuf"
-version = "1.6.2"
+version = "1.7.0"
 authors = ["Ballerina"]
 keywords = ["wrappers"]
 repository = "https://github.com/ballerina-platform/module-ballerina-protobuf"
 icon = "icon.png"
 license = ["Apache-2.0"]
-distribution = "2201.8.0"
+distribution = "2201.11.0"
 export = ["protobuf", "protobuf.types.any", "protobuf.types.duration", "protobuf.types.empty", "protobuf.types.struct", "protobuf.types.timestamp", "protobuf.types.wrappers"]
 
 [platform.java21]
@@ -16,8 +16,8 @@ graalvmCompatible = true
 [[platform.java21.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "protobuf-native"
-version = "1.6.2"
-path = "../native/build/libs/protobuf-native-1.6.2-SNAPSHOT.jar"
+version = "1.7.0"
+path = "../native/build/libs/protobuf-native-1.7.0-SNAPSHOT.jar"
 
 [[platform.java21.dependency]]
 groupId = "com.google.protobuf"
