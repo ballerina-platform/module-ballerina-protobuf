@@ -8,7 +8,30 @@ repository = "https://github.com/ballerina-platform/module-ballerina-protobuf"
 icon = "icon.png"
 license = ["Apache-2.0"]
 distribution = "2201.11.0"
-export = ["protobuf", "protobuf.types.any", "protobuf.types.duration", "protobuf.types.empty", "protobuf.types.struct", "protobuf.types.timestamp", "protobuf.types.wrappers"]
+
+[[package.modules]]
+name="protobuf.types.any"
+export=true
+
+[[package.modules]]
+name="protobuf.types.duration"
+export=true
+
+[[package.modules]]
+name="protobuf.types.empty"
+export=true
+
+[[package.modules]]
+name="protobuf.types.struct"
+export=true
+
+[[package.modules]]
+name="protobuf.types.timestamp"
+export=true
+
+[[package.modules]]
+name="protobuf.types.wrappers"
+export=true
 
 [platform.java21]
 graalvmCompatible = true
