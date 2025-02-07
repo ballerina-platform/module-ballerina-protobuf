@@ -25,7 +25,6 @@ export=true
 name="protobuf.types.struct"
 export=true
 
-
 [[package.modules]]
 name="protobuf.types.timestamp"
 export=true
