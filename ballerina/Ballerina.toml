@@ -40,7 +40,7 @@ graalvmCompatible = true
 groupId = "io.ballerina.stdlib"
 artifactId = "protobuf-native"
 version = "1.7.0"
-path = "../native/build/libs/protobuf-native-1.7.0-SNAPSHOT.jar"
+path = "../native/build/libs/protobuf-native-1.7.0.jar"
 
 [[platform.java21.dependency]]
 groupId = "com.google.protobuf"
