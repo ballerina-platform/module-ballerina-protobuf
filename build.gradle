@@ -92,6 +92,6 @@ release {
     }
 }
 
-task build {
+tasks.named('build') {
     dependsOn('protobuf-ballerina:build')
 }
