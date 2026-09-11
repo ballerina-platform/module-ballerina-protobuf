@@ -92,6 +92,14 @@ release {
     }
 }
 
-tasks.named('build') {
-    dependsOn('protobuf-ballerina:build')
+if (tasks.names.contains('build')) {
+    tasks.named('build') {
+        dependsOn('protobuf-ballerina:build')
+
+    }
+} else {
+    tasks.register('build') {
+        dependsOn('protobuf-ballerina:build')
+
+    }
 }
