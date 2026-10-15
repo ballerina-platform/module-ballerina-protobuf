@@ -45,5 +45,5 @@ path = "../native/build/libs/protobuf-native-1.8.0.jar"
 [[platform.java21.dependency]]
 groupId = "com.google.protobuf"
 artifactId = "protobuf-java"
-version = "3.25.5"
-path = "./lib/protobuf-java-3.25.5.jar"
+version = "4.36.2"
+path = "./lib/protobuf-java-4.36.2.jar"

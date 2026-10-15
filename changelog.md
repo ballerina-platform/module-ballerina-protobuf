@@ -4,6 +4,7 @@ This file contains all the notable changes done to the Ballerina Protobuf packag
 ## [Unreleased]
 
 ### Changed
+- [Upgrade protobuf-java to 4.36.2 to remove `sun.misc.Unsafe` warnings on JDK 24+](https://github.com/ballerina-platform/ballerina-library/issues/9311)
 - [API docs updated](https://github.com/ballerina-platform/ballerina-standard-library/issues/3463)
 
 ### Fixed
