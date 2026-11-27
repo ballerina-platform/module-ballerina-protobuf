@@ -148,9 +148,11 @@ public class AnyTypeCreator {
                     default:
                         break;
                 }
-            } catch (IOException | Descriptors.DescriptorValidationException | AnnotationUnavailableException
-                     | RuntimeException e) {
+            } catch (IOException | Descriptors.DescriptorValidationException | AnnotationUnavailableException e) {
                 return ErrorGenerator.createError(Errors.TypeMismatchError, e.toString());
+            } catch (RuntimeException e) {
+                // Catch-all so that any unexpected decoding failure is returned as an error instead of a panic.
+                return ErrorGenerator.createError(Errors.Error, "Error occurred while unpacking the value: " + e);
             }
 
         }
