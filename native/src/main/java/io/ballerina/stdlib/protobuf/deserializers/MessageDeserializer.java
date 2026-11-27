@@ -117,12 +117,12 @@ public class MessageDeserializer extends AbstractDeserializer {
             BArray bArray = (BArray) bMessage.getContent();
             bArray.add(1, readMessage(PredefinedTypes.TYPE_ANYDATA));
         } else if (fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_VALUE_LIST_VALUE)) {
-            bMessage.setContent(readMessage(PredefinedTypes.TYPE_ANYDATA));
+            bMessage.setContent(readMessage(TypeCreator.createArrayType(PredefinedTypes.TYPE_ANYDATA)));
         } else if (fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_LIST_VALUE_VALUES)) {
             BArray bArray = (BArray) bMessage.getContent();
             bArray.add(bArray.size(), readMessage(PredefinedTypes.TYPE_ANYDATA));
         } else if (fieldDescriptor.getFullName().equals(GOOGLE_PROTOBUF_VALUE_STRUCT_VALUE)) {
-            bMessage.setContent(readMessage(PredefinedTypes.TYPE_ANYDATA));
+            bMessage.setContent(readMessage(TypeCreator.createMapType(PredefinedTypes.TYPE_ANYDATA)));
         } else if (recordType != null) {
             Type messageType = TypeUtils.getReferredType(recordType.getFields().get(bFieldName.getValue()).
                     getFieldType());

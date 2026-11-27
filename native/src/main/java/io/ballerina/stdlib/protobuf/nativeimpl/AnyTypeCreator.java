@@ -148,7 +148,8 @@ public class AnyTypeCreator {
                     default:
                         break;
                 }
-            } catch (IOException | Descriptors.DescriptorValidationException | AnnotationUnavailableException e) {
+            } catch (IOException | Descriptors.DescriptorValidationException | AnnotationUnavailableException
+                     | RuntimeException e) {
                 return ErrorGenerator.createError(Errors.TypeMismatchError, e.toString());
             }
 
