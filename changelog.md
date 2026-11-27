@@ -9,6 +9,7 @@ This file contains all the notable changes done to the Ballerina Protobuf packag
 
 ### Fixed
 
+- [Fix `any:unpack` dropping nested maps and panicking on lists inside a `Struct`](https://github.com/ballerina-platform/ballerina-library/issues/9858)
 - [Address CVE-2024-7254 vulnerability](https://github.com/ballerina-platform/ballerina-library/issues/7013)
 
 ## [1.3.1] - 2022-10-06

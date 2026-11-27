@@ -24,5 +24,6 @@ package io.ballerina.stdlib.protobuf.nativeimpl;
  * @since 1.0.1
  */
 public enum Errors {
+    Error,
     TypeMismatchError
 }
